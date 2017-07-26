@@ -1,0 +1,32 @@
+<%= form_with(model: interval, local: true) do |form| %>
+  <% if interval.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(interval.errors.count, "error") %> prohibited this interval from being saved:</h2>
+
+      <ul>
+      <% interval.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :numerator %>
+    <%= form.text_field :numerator, id: :interval_numerator %>
+  </div>
+
+  <div class="field">
+    <%= form.label :denominator %>
+    <%= form.text_field :denominator, id: :interval_denominator %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_field :description, id: :interval_description %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

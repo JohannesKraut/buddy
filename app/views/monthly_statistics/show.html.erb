@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Period:</strong>
+  <%= @monthly_statistic.period %>
+</p>
+
+<p>
+  <strong>Planned value:</strong>
+  <%= @monthly_statistic.planned_value %>
+</p>
+
+<p>
+  <strong>Actual value:</strong>
+  <%= @monthly_statistic.actual_value %>
+</p>
+
+<p>
+  <strong>Item:</strong>
+  <%= @monthly_statistic.item %>
+</p>
+
+<%= link_to 'Edit', edit_monthly_statistic_path(@monthly_statistic) %> |
+<%= link_to 'Back', monthly_statistics_path %>

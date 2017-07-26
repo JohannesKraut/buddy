@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Intervals</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Numerator</th>
+      <th>Denominator</th>
+      <th>Description</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @intervals.each do |interval| %>
+      <tr>
+        <td><%= interval.numerator %></td>
+        <td><%= interval.denominator %></td>
+        <td><%= interval.description %></td>
+        <td><%= link_to 'Show', interval %></td>
+        <td><%= link_to 'Edit', edit_interval_path(interval) %></td>
+        <td><%= link_to 'Destroy', interval, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Interval', new_interval_path %>

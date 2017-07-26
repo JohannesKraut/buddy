@@ -1,0 +1,49 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Order:</strong>
+  <%= @item.order_id %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @item.name %>
+</p>
+
+<p>
+  <strong>Total amount:</strong>
+  <%= @item.total_amount %>
+</p>
+
+<p>
+  <strong>Amount calculated:</strong>
+  <%= @item.amount_calculated %>
+</p>
+
+<p>
+  <strong>Reserve:</strong>
+  <%= @item.reserve %>
+</p>
+
+<p>
+  <strong>Maturity:</strong>
+  <%= @item.maturity %>
+</p>
+
+<p>
+  <strong>Active:</strong>
+  <%= @item.active %>
+</p>
+
+<p>
+  <strong>Category:</strong>
+  <%= @item.category %>
+</p>
+
+<p>
+  <strong>Interval:</strong>
+  <%= @item.interval %>
+</p>
+
+<%= link_to 'Edit', edit_item_path(@item) %> |
+<%= link_to 'Back', items_path %>

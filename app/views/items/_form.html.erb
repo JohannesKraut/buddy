@@ -1,0 +1,62 @@
+<%= form_with(model: item, local: true) do |form| %>
+  <% if item.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(item.errors.count, "error") %> prohibited this item from being saved:</h2>
+
+      <ul>
+      <% item.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :order_id %>
+    <%= form.number_field :order_id, id: :item_order_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name, id: :item_name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :total_amount %>
+    <%= form.text_field :total_amount, id: :item_total_amount %>
+  </div>
+
+  <div class="field">
+    <%= form.label :amount_calculated %>
+    <%= form.text_field :amount_calculated, id: :item_amount_calculated %>
+  </div>
+
+  <div class="field">
+    <%= form.label :reserve %>
+    <%= form.check_box :reserve, id: :item_reserve %>
+  </div>
+
+  <div class="field">
+    <%= form.label :maturity %>
+    <%= form.date_select :maturity, id: :item_maturity %>
+  </div>
+
+  <div class="field">
+    <%= form.label :active %>
+    <%= form.check_box :active, id: :item_active %>
+  </div>
+
+  <div class="field">
+    <%= form.label :category_id %>
+    <%= form.text_field :category_id, id: :item_category_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :interval_id %>
+    <%= form.text_field :interval_id, id: :item_interval_id %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Period:</strong>
+  <%= @finance_state.period %>
+</p>
+
+<p>
+  <strong>Hibiscus sync:</strong>
+  <%= @finance_state.hibiscus_sync_id %>
+</p>
+
+<p>
+  <strong>Balance:</strong>
+  <%= @finance_state.balance %>
+</p>
+
+<p>
+  <strong>Account:</strong>
+  <%= @finance_state.account %>
+</p>
+
+<%= link_to 'Edit', edit_finance_state_path(@finance_state) %> |
+<%= link_to 'Back', finance_states_path %>

@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  period: 2017-07-22
+  planned_value: 9.99
+  actual_value: 9.99
+  item: one
+
+two:
+  period: 2017-07-22
+  planned_value: 9.99
+  actual_value: 9.99
+  item: two

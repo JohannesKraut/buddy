@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Numerator:</strong>
+  <%= @interval.numerator %>
+</p>
+
+<p>
+  <strong>Denominator:</strong>
+  <%= @interval.denominator %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @interval.description %>
+</p>
+
+<%= link_to 'Edit', edit_interval_path(@interval) %> |
+<%= link_to 'Back', intervals_path %>
