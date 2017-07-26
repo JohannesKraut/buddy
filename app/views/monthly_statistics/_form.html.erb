@@ -1,0 +1,37 @@
+<%= form_with(model: monthly_statistic, local: true) do |form| %>
+  <% if monthly_statistic.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(monthly_statistic.errors.count, "error") %> prohibited this monthly_statistic from being saved:</h2>
+
+      <ul>
+      <% monthly_statistic.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :period %>
+    <%= form.date_select :period, id: :monthly_statistic_period %>
+  </div>
+
+  <div class="field">
+    <%= form.label :planned_value %>
+    <%= form.text_field :planned_value, id: :monthly_statistic_planned_value %>
+  </div>
+
+  <div class="field">
+    <%= form.label :actual_value %>
+    <%= form.text_field :actual_value, id: :monthly_statistic_actual_value %>
+  </div>
+
+  <div class="field">
+    <%= form.label :item_id %>
+    <%= form.text_field :item_id, id: :monthly_statistic_item_id %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

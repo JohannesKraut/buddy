@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  numerator: 9.99
+  denominator: 9.99
+  description: MyString
+
+two:
+  numerator: 9.99
+  denominator: 9.99
+  description: MyString

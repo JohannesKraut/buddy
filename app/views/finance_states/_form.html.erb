@@ -1,0 +1,37 @@
+<%= form_with(model: finance_state, local: true) do |form| %>
+  <% if finance_state.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(finance_state.errors.count, "error") %> prohibited this finance_state from being saved:</h2>
+
+      <ul>
+      <% finance_state.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :period %>
+    <%= form.date_select :period, id: :finance_state_period %>
+  </div>
+
+  <div class="field">
+    <%= form.label :hibiscus_sync_id %>
+    <%= form.number_field :hibiscus_sync_id, id: :finance_state_hibiscus_sync_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :balance %>
+    <%= form.text_field :balance, id: :finance_state_balance %>
+  </div>
+
+  <div class="field">
+    <%= form.label :account_id %>
+    <%= form.text_field :account_id, id: :finance_state_account_id %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
