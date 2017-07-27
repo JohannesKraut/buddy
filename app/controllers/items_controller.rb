@@ -1,15 +1,20 @@
 class ItemsController < ApplicationController
   before_action :set_item, only: [:show, :edit, :update, :destroy]
+  respond_to :html, :json
 
   # GET /items
   # GET /items.json
   def index
-    @items = Item.all
+    respond_to do |format|
+    format.html
+    format.json { render json: ItemsDatatable.new(view_context) }
+    end
   end
 
   # GET /items/1
   # GET /items/1.json
   def show
+    @item = Item.find(params[:id])
   end
 
   # GET /items/new
@@ -19,6 +24,7 @@ class ItemsController < ApplicationController
 
   # GET /items/1/edit
   def edit
+    @item = Item.find(params[:id])
   end
 
   # POST /items
@@ -59,6 +65,11 @@ class ItemsController < ApplicationController
       format.html { redirect_to items_url, notice: 'Item was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+  
+  def import
+    Item.import(params[:file])
+    redirect_to items_path, notice: "Item data imported"
   end
 
   private
