@@ -44,9 +44,6 @@ gem 'jbuilder', '~> 2.5'
 # gem 'capistrano-rails', group: :development
 
 gem 'font-awesome-sass'
-#gem 'responders'
-#gem 'autoprefixer-rails'
-
 
 ################
 #gem 'adminlte-rails'
@@ -55,17 +52,17 @@ source 'https://rails-assets.org/' do
   gem 'rails-assets-adminlte'
 end
 
-
 #gem 'adminlte-rails'
 #################
 gem 'best_in_place'
-#gem 'responders'
+gem 'responders'
 gem 'autoprefixer-rails'
 
 gem 'jquery-datatables-rails', '~> 3.4.0'
 
 gem 'jquery-ui-rails'
 # start
+gem 'will_paginate'
 
 ###
 
