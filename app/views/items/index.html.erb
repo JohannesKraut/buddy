@@ -1,89 +1,73 @@
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-      	Monthly planning
-        <small>Income vs. expenses</small>
-      </h1>
-      <!-- <ol class="breadcrumb"> -->
-		<%=	content_tag(:ol, :class => "breadcrumb") do
-				navigation = {
-				"Home" => [root_path, "fa fa-dashboard"],
-				"Monthly planning" => [items_path, "active"]}
-				navigation.each do |key, value|
-						concat content_tag(:li, link_to(key, value[0], :class => value[1]))
-				end
-		end %>
-	    <!-- <li><a href="#"><i class="fa fa-dashboard"></i>Home</a></li> 
-	    <li><a href="#">Tables</a></li>
-	    <li class="active">Data tables</li> 
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Tables</a></li>
-        <li class="active">Data tables</li> -->
-      <!-- </ol> -->
-    </section>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+	<!-- Content Header (Page header) -->
+	<section class="content-header">
+		<h1> Monthly planning <small>Income vs. expenses</small></h1>
+		<!-- <ol class="breadcrumb"> -->
+		<%= render 'navigations/navigation_bar' %>
+	</section>
 
-    <!-- Main content -->
-    <section class="content">
-      <div class="row">
-        <div class="col-xs-12">
-          <div class="box">
-            <div class="box-header">
-              <h3 class="box-title">Data Table With Full Features</h3>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-		        <table style="width: 67%; margin: 0 auto 2em auto;" cellspacing="0" cellpadding="3" border="0">
-			        <thead>
-			            <tr>
-			                <th>Filter</th>
-			            </tr>
-			        </thead>
-			        <tbody>
-			            
-	        		</tbody>
-    			</table>
-			    <table id="example1" class="display" data-source="<%= items_url(format: "json") %>">
-				  <thead>
-					<tr>
-					  <th>Order</th>
-					  <th>Name</th>
-					  <th>Total amount</th>
-					  <th>Amount calculated</th>
-					  <th>Reserve</th>
-					  <th>Maturity</th>
-					  <th>Active</th>
-					  <th>Category</th>
-					  <th>Interval</th>
-					  <th>Rollup</th>
-					  <th colspan="3"></th>
-					</tr>
-				  </thead>
-	                <tbody>
-	                	<!-- automatically filled by items controller -->
-	        		</tbody>
-              	</table>
-            </div>
-            <!-- /.box-body -->
-          </div>
-          <!-- /.box -->
-        </div>
-        <!-- /.col -->
-      </div>
-      <!-- /.row -->
-      <div>
-      		<h4>Import items</h4>
-		<%= form_tag import_items_path, multipart: true do %>
+	<!-- Main content -->
+	<section class="content">
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="box">
+					<div class="box-header">
+						<h3 class="box-title">Data Table With Full Features</h3>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+						<table style="width: 67%; margin: 0 auto 2em auto;" cellspacing="0" cellpadding="3" border="0">
+							<thead>
+								<tr>
+									<th>Filter</th>
+								</tr>
+							</thead>
+							<tbody>
+
+							</tbody>
+						</table>
+						<table id="example1" class="display" data-source="<%= items_url(format: "json") %>">
+							<thead>
+								<tr>
+									<th>Order</th>
+									<th>Name</th>
+									<th>Total amount</th>
+									<th>Amount calculated</th>
+									<th>Reserve</th>
+									<th>Maturity</th>
+									<th>Active</th>
+									<th>Category</th>
+									<th>Interval</th>
+									<th>Rollup</th>
+									<th>Key words</th>
+									<th colspan="3"></th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- automatically filled by items controller -->
+							</tbody>
+						</table>
+					</div>
+					<!-- /.box-body -->
+				</div>
+				<!-- /.box -->
+			</div>
+			<!-- /.col -->
+		</div>
+		<!-- /.row -->
+		<div>
+			<h4>Import items</h4>
+			<%= form_tag import_items_path, multipart: true do %>
 			<%= file_field_tag :file %>
 			<%= submit_tag "Import CSV" %>
-		<% end %>
-	</div>
-    </section>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
+			<% end %>
+		</div>
+	</section>
+	<!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
 <script type="text/javascript">
 	var tableId = '#example1'
-		myFunction(tableId)
+	myFunction(tableId)
 </script>

@@ -4,12 +4,16 @@ class MonthlyStatisticsController < ApplicationController
   # GET /monthly_statistics
   # GET /monthly_statistics.json
   def index
-    @monthly_statistics = MonthlyStatistic.all
+    respond_to do |format|
+    format.html
+    format.json { render json: MonthlyStatisticsDatatable.new(view_context) }
+    end
   end
 
   # GET /monthly_statistics/1
   # GET /monthly_statistics/1.json
   def show
+    @monthly_statistic = MonthlyStatistic.find(params[:id])
   end
 
   # GET /monthly_statistics/new
@@ -19,6 +23,7 @@ class MonthlyStatisticsController < ApplicationController
 
   # GET /monthly_statistics/1/edit
   def edit
+    @monthly_statistic = MonthlyStatistic.find(params[:id])
   end
 
   # POST /monthly_statistics
@@ -60,6 +65,11 @@ class MonthlyStatisticsController < ApplicationController
       format.json { head :no_content }
     end
   end
+  
+  def import
+    MonthlyStatistic.import(params[:file])
+    redirect_to monthly_statistics_path, notice: "Statistics data imported"
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -69,6 +79,6 @@ class MonthlyStatisticsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def monthly_statistic_params
-      params.require(:monthly_statistic).permit(:period, :planned_value, :actual_value, :item_id)
+      params.require(:monthly_statistic).permit(:period, :planned_value, :actual_value, :item_id, :hibiscus_sync_id)
     end
 end

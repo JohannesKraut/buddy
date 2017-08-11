@@ -1,15 +1,20 @@
 class AccountsController < ApplicationController
   before_action :set_account, only: [:show, :edit, :update, :destroy]
+  respond_to :html, :json
 
   # GET /accounts
   # GET /accounts.json
-  def index
-    @accounts = Account.all
+  def index   
+    respond_to do |format|
+    format.html
+    format.json { render json: AccountsDatatable.new(view_context) }
+    end
   end
 
   # GET /accounts/1
   # GET /accounts/1.json
   def show
+    @account = Account.find(params[:id])
   end
 
   # GET /accounts/new
@@ -19,6 +24,7 @@ class AccountsController < ApplicationController
 
   # GET /accounts/1/edit
   def edit
+    @account = Account.find(params[:id])
   end
 
   # POST /accounts
@@ -59,6 +65,11 @@ class AccountsController < ApplicationController
       format.html { redirect_to accounts_url, notice: 'Account was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+  
+  def import
+    Account.import(params[:file])
+    redirect_to accounts_path, notice: "Account data imported"
   end
 
   private

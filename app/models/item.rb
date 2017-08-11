@@ -9,6 +9,5 @@ class Item < ApplicationRecord
       Item.create! row.to_hash
     end
   end
-  
-  
+    
 end

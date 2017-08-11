@@ -1,15 +1,20 @@
 class IntervalsController < ApplicationController
   before_action :set_interval, only: [:show, :edit, :update, :destroy]
-
+  respond_to :html, :json
+  
   # GET /intervals
   # GET /intervals.json
   def index
-    @intervals = Interval.all
+    respond_to do |format|
+    format.html
+    format.json { render json: IntervalsDatatable.new(view_context) }
+    end
   end
 
   # GET /intervals/1
   # GET /intervals/1.json
   def show
+    Interval.find(params[:id])
   end
 
   # GET /intervals/new
@@ -19,6 +24,7 @@ class IntervalsController < ApplicationController
 
   # GET /intervals/1/edit
   def edit
+    Interval.find(params[:id])
   end
 
   # POST /intervals
@@ -60,6 +66,11 @@ class IntervalsController < ApplicationController
       format.json { head :no_content }
     end
   end
+  
+  def import
+    Interval.import(params[:file])
+    redirect_to intervals_path, notice: "Item data imported"
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -69,6 +80,6 @@ class IntervalsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def interval_params
-      params.require(:interval).permit(:numerator, :denominator, :description)
+      params.require(:interval).permit(:numerator, :denominator, :description, :name)
     end
 end

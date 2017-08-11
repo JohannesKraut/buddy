@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170722101304) do
+ActiveRecord::Schema.define(version: 20170808120412) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "account_number"
@@ -38,12 +38,18 @@ ActiveRecord::Schema.define(version: 20170722101304) do
     t.index ["account_id"], name: "index_finance_states_on_account_id"
   end
 
+  create_table "hibiscus_transactions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "intervals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.decimal "numerator", precision: 8, scale: 2
     t.decimal "denominator", precision: 8, scale: 2
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name"
   end
 
   create_table "items", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -58,6 +64,7 @@ ActiveRecord::Schema.define(version: 20170722101304) do
     t.bigint "interval_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "key_words"
     t.index ["category_id"], name: "index_items_on_category_id"
     t.index ["interval_id"], name: "index_items_on_interval_id"
   end
@@ -69,7 +76,18 @@ ActiveRecord::Schema.define(version: 20170722101304) do
     t.bigint "item_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "hibiscus_sync_id"
     t.index ["item_id"], name: "index_monthly_statistics_on_item_id"
+  end
+
+  create_table "navigations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "display_text"
+    t.string "url"
+    t.string "html_class"
+    t.integer "parent"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "order_id"
   end
 
   add_foreign_key "finance_states", "accounts"

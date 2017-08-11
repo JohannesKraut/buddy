@@ -1,0 +1,13 @@
+<!-- Display a navigation bar with the current page relative to root according to the Navigation links maintained -->
+<%= content_tag(:ol, :class => "breadcrumb") do %>	
+	<% full_path = request.path.to_s %>
+	<% urls_array = full_path.split("/") %>
+	<% urls_array.each do |url| %>
+		<% navigation_link = Navigation.find_by(url: "/" + url) %>
+		<% if navigation_link.present? %>
+			<%= content_tag(:li, link_to(" " + navigation_link.display_text, navigation_link.url)) %>
+		<% else %>
+			<%= content_tag(:li, " " + url, :class => "active") %>
+		<% end %>	
+	<% end %>
+<% end %>

@@ -31,7 +31,8 @@ private
         monthly_statistic.period,
         Item.find(monthly_statistic.item_id).name,
         monthly_statistic.planned_value,
-        monthly_statistic.actual_value
+        monthly_statistic.actual_value,
+        monthly_statistic.hibiscus_sync_id
       ]
       data.push(row)
     end
@@ -82,7 +83,7 @@ private
   def get_columns
     columns = Hash.new
     #:period, :planned_value, :actual_value, :item_id
-    columns = {"0" => "id", "1" => "period", "2" => "item_id", "3" => "planned_value", "4" => "actual_value" }
+    columns = {"0" => "id", "1" => "period", "2" => "item_id", "3" => "planned_value", "4" => "actual_value", "5" => "hibiscus_sync_id"}
     return columns
   end
 

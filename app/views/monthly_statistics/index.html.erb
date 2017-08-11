@@ -1,33 +1,68 @@
-<p id="notice"><%= notice %></p>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+	<!-- Content Header (Page header) -->
+	<section class="content-header">
+		<h1> Monthly planning <small>Income vs. expenses</small></h1>
+	  	<%= render 'navigations/navigation_bar' %>
+	  	<p id="notice"><%= notice %></p>
+	</section>
+	<!-- Main content -->
+	<section class="content">
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="box">
+					<div class="box-header">
+						<h3 class="box-title">Data Table With Full Features</h3>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+						<table style="width: 67%; margin: 0 auto 2em auto;" cellspacing="0" cellpadding="3" border="0">
+							<thead>
+								<tr>
+									<th>Filter</th>
+								</tr>
+							</thead>
+							<tbody>
 
-<h1>Monthly Statistics</h1>
+							</tbody>
+						</table>
+						<table id="example1" class="display" data-source="<%= monthly_statistics_url(format: "json") %>">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Period</th>
+									<th>Item</th>
+									<th>Planned value</th>
+									<th>Actual value</th>
+									<th>Hibiscus id</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- automatically filled by items controller -->
+							</tbody>
+						</table>
+					</div>
+					<!-- /.box-body -->
+				</div>
+				<!-- /.box -->
+			</div>
+			<!-- /.col -->
+		</div>
+		<!-- /.row -->
+		<div>
+			<h4>Import Statistics</h4>
+			<%= form_tag import_monthly_statistics_path, multipart: true do %>
+			<%= file_field_tag :file %>
+			<%= submit_tag "Import CSV" %>
+			<% end %>
+			<%= link_to 'New Monthly Statistic', new_monthly_statistic_path %>
+		</div>
+	</section>
+	<!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<script type="text/javascript">
+	var tableId = '#example1'
+	myFunction(tableId)
+</script>
 
-<table>
-  <thead>
-    <tr>
-      <th>Period</th>
-      <th>Planned value</th>
-      <th>Actual value</th>
-      <th>Item</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @monthly_statistics.each do |monthly_statistic| %>
-      <tr>
-        <td><%= monthly_statistic.period %></td>
-        <td><%= monthly_statistic.planned_value %></td>
-        <td><%= monthly_statistic.actual_value %></td>
-        <td><%= monthly_statistic.item %></td>
-        <td><%= link_to 'Show', monthly_statistic %></td>
-        <td><%= link_to 'Edit', edit_monthly_statistic_path(monthly_statistic) %></td>
-        <td><%= link_to 'Destroy', monthly_statistic, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Monthly Statistic', new_monthly_statistic_path %>

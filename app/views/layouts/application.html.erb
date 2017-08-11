@@ -4,31 +4,29 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <!-- Tell the browser to be responsive to screen width -->
-  <title>FinanceManager</title>
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <title>FinanceManager</title>
   <%= csrf_meta_tags %>
-  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag 'application', media: 'all' %>
+  <%= javascript_include_tag 'application' %>
 </head>
 
-<body class="skin-blue sidebar-mini wysihtml5-supported sidebar-collapse" style="height: auto;">
+<body class="hold-transition skin-blue sidebar-mini sidebar-collapse">
 <!-- <body class="skin-blue sidebar-mini"> "hold-transition skin-blue sidebar-mini" -->
-<div class="wrapper">
-	<header class="main-header">
+	<div class="wrapper">
 		<%= render template: "layouts/header" %>
-	</header>
-  	<%= render template: "layouts/sidebar" %>
-  	<%= yield %>
-	  <!-- Main Footer -->
-	  <footer class="main-footer">
-	    <!-- To the right -->
-	    <div class="pull-right hidden-xs">
-	      Anything you want
-	    </div>
-	    <!-- Default to the left -->
-	    <strong>Copyright &copy; 2016 <a href="#">Company</a>.</strong> All rights reserved.
-	  </footer>
-  	<%= render template: "layouts/controls" %>
-</div>
+	  	<%= render template: "layouts/sidebar" %>
+	  	<%= yield %>
+		  <!-- Main Footer -->
+		  <footer class="main-footer">
+		    <!-- To the right -->
+		    <div class="pull-right hidden-xs">
+		      Anything you want
+		    </div>
+		    <!-- Default to the left -->
+		    <strong>Copyright &copy; 2016 <a href="#">Company</a>.</strong> All rights reserved.
+		  </footer>
+	  	<%= render template: "layouts/controls" %>
+	</div>
 </body>
 </html>

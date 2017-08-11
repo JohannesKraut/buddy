@@ -1,15 +1,23 @@
 class CategoriesController < ApplicationController
   before_action :set_category, only: [:show, :edit, :update, :destroy]
+  respond_to :html, :json
 
   # GET /categories
   # GET /categories.json
   def index
-    @categories = Category.all
+    columns = Hash.new
+    columns = {"0" => "name", "1" => "description"}
+    
+    respond_to do |format|
+    format.html
+    format.json { render json: CategoriesDatatable.new(view_context) }
+    end
   end
 
   # GET /categories/1
   # GET /categories/1.json
   def show
+    @category = Category.find(params[:id])
   end
 
   # GET /categories/new
@@ -19,6 +27,7 @@ class CategoriesController < ApplicationController
 
   # GET /categories/1/edit
   def edit
+    @category = Category.find(params[:id])
   end
 
   # POST /categories
@@ -59,6 +68,11 @@ class CategoriesController < ApplicationController
       format.html { redirect_to categories_url, notice: 'Category was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  def import
+    Category.import(params[:file])
+    redirect_to categories_path, notice: "Item data imported"
   end
 
   private

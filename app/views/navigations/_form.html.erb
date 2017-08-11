@@ -1,0 +1,42 @@
+<%= form_with(model: @navigation, local: true) do |form| %>
+  <% if @navigation.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@navigation.errors.count, "error") %> prohibited this navigation from being saved:</h2>
+
+      <ul>
+      <% @navigation.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+<% end %>
+
+<table id="example2" class="table table-bordered table-hover">     
+	<thead>
+    	<tr>
+			<th>#</th>
+			<th>Order id</th>
+			<th>Display text</th>
+			<th>URL</th>
+			<th>HTML class</th>
+			<th>Parent</th>
+			<th colspan="1"></th>
+        </tr>
+	</thead>
+	<tbody>
+	    <tr>
+	      <td><%= @navigation.id %></td>
+	      <td><%= best_in_place @navigation, :order_id, :as => :input, :type => :textarea %></td>
+		  <td><%= best_in_place @navigation, :display_text, :as => :input, :type => :textarea %></td>
+		  <td><%= best_in_place @navigation, :url, :as => :input, :type => :textarea  %></td>
+		  <td><%= best_in_place @navigation, :html_class, :as => :input, :type => :textarea  %></td>
+		  <td><%= best_in_place @navigation, :parent, :as => :select, :collection => Navigation.all.map { |i| [i.id, i.display_text] }.insert(0, ["0", "No parent"]) %></td>
+		  <td><%= best_in_place @navigation, :order_id, :as => :input, :type => :textarea  %></td>
+	      <td><%= #link_to 'Destroy', navigation_path(@navigation), method: :delete, data: { confirm: 'Are you sure?' }  #, :place_holder => "0" 
+	      %></td>
+	    </tr>
+    </tbody>
+    <tfoot>
+   	</tfoot>
+</table>

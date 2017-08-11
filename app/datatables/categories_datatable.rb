@@ -1,11 +1,6 @@
 class CategoriesDatatable
   delegate :params, :h, :link_to, to: :@view
-  
-  #define scope for db-lookup
-  #scope :featured, -> { where(:featured => true) }
-  #scope :by_degree, -> degree { where(:degree => degree) }
-  #name, credit
-  
+    
   def initialize(view)
     @view = view
   end
@@ -23,25 +18,17 @@ private
 
   def data
     data = Array.new
-    categories.all.order(:name).each_with_index do |category, index|
+    categories.all.order(:id).each_with_index do |category, index|
       row = [
+        category.id,
         category.name,
-        category.credit
+        category.description,
+        link_to('Edit', category),
+        link_to('Destroy', category, method: :delete, data: { confirm: 'Are you sure?' })
       ]
       data.push(row)
     end
-    puts data
     return data
-    #items.map do |item|
-    #  [
-    #    item.order_id,
-    #    link_to(item.name, item),
-    #    item.get_signed_amount,
-     #   Category.find(item.category_id).name,
-    #    item.maturity,
-    #    item.active
-    #  ]
-    #end
   end
  
   def categories
@@ -86,13 +73,18 @@ private
   end
   
   def get_columns
+    #return @columns
     columns = Hash.new
-    columns = {"0" => "name", "1" => "credit"}
+    columns = {"0" => "id", "1" => "name", "2" => "description", "3" => "description"}
     return columns
   end
 
   def page
-    params[:iDisplayStart].to_i/per_page + 1
+    if params[:iDisplayStart].to_i > 0
+      return params[:iDisplayStart].to_i/per_page + 1
+    else
+      return 1
+    end
   end
 
   def per_page

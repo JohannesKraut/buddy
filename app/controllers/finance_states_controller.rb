@@ -1,15 +1,20 @@
 class FinanceStatesController < ApplicationController
   before_action :set_finance_state, only: [:show, :edit, :update, :destroy]
+  respond_to :html, :json
 
   # GET /finance_states
   # GET /finance_states.json
   def index
-    @finance_states = FinanceState.all
+    respond_to do |format|
+    format.html
+    format.json { render json: FinanceStatesDatatable.new(view_context) }
+    end
   end
 
   # GET /finance_states/1
   # GET /finance_states/1.json
   def show
+    @finance_state = FinanceState.find(params[:id])
   end
 
   # GET /finance_states/new
@@ -19,6 +24,7 @@ class FinanceStatesController < ApplicationController
 
   # GET /finance_states/1/edit
   def edit
+    @finance_state = FinanceState.find(params[:id])
   end
 
   # POST /finance_states
@@ -59,6 +65,11 @@ class FinanceStatesController < ApplicationController
       format.html { redirect_to finance_states_url, notice: 'Finance state was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+  
+  def import
+    FinanceState.import(params[:file])
+    redirect_to finance_states_path, notice: "Finance state data imported"
   end
 
   private

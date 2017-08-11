@@ -39,7 +39,8 @@ private
         item.active,
         item.category_id,
         item.interval_id,
-        @rollup        
+        @rollup,
+        item.key_words       
       ]
       puts data
       #Interval.find(item.interval_id).description,
@@ -105,7 +106,7 @@ private
 
   def get_columns
     columns = Hash.new
-    columns = {"0" => "order_id", "1" => "name", "2" => "total_amount", "3" => "amount_calculated", "4" => "reserve", "5" => "maturity", "6" => "active", "7" => "category_id", "8" => "interval_id", "9" => "rollup"}
+    columns = {"0" => "order_id", "1" => "name", "2" => "total_amount", "3" => "amount_calculated", "4" => "reserve", "5" => "maturity", "6" => "active", "7" => "category_id", "8" => "interval_id", "9" => "rollup", "10" => "key_words"}
     #columns["order_id"] = 0
     #columns["name"] = 1
     return columns
