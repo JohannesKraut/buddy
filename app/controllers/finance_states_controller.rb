@@ -1,6 +1,7 @@
 class FinanceStatesController < ApplicationController
   before_action :set_finance_state, only: [:show, :edit, :update, :destroy]
   respond_to :html, :json
+  add_flash_types :success, :warning, :danger, :info
 
   # GET /finance_states
   # GET /finance_states.json
@@ -65,6 +66,11 @@ class FinanceStatesController < ApplicationController
       format.html { redirect_to finance_states_url, notice: 'Finance state was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+  
+  def synchronize
+    FinanceState.synchronize
+    redirect_to finance_states_path, success: "Statistics created"
   end
   
   def import

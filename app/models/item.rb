@@ -2,6 +2,17 @@ class Item < ApplicationRecord
   belongs_to :category
   belongs_to :interval
   
+  def calculate_planned_value
+    @item = Item.find(id)
+    @interval = Interval.find(interval_id)
+    @multiplier = Rational(@interval.numerator * @interval.denominator)
+    
+    calculate_planned_value = @multiplier * total_amount 
+    @item.update(amount_calculated: calculate_planned_value)
+    #amount_calculated = calculate_planned_value
+  end
+ 
+  
   require 'csv'
   #uses import method of referenced class CSV
   def self.import(file)

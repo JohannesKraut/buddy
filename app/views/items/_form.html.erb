@@ -30,21 +30,21 @@
 	</thead>
 	<tbody>
 	    <tr>
-	      <td><%= best_in_place @item, :order_id, :as => :input %></td>
-		  <td><%= best_in_place @item, :name, :as => :input %></td>
-		  <td><%= best_in_place @item, :total_amount, :as => :input %></td>
-		  <td><%= best_in_place @item, :amount_calculated, :as => :input %></td>
-		  <td><%= best_in_place @item, :reserve, as: :checkbox, collection: {false: "No", true: "Yes"}  %></td>
-		  <td><%= best_in_place @item, :maturity, :as => :date %></td>
+	      <td><%= best_in_place @item, :order_id, :as => :input, :type => :textarea %></td>
+		  <td><%= best_in_place @item, :name, :as => :input, :type => :textarea %></td>
+		  <td><%= best_in_place @item, :total_amount, :as => :input, :type => :textarea, :data => {:message => @item.amount_calculated} %></td>
+		  <!-- ><td><%= best_in_place @item, :amount_calculated,:display_as => :calculate_planned_value, :as => :input, :type => :textarea %></td> -->
+		  <td><%= best_in_place @item, :amount_calculated, :as => :input, :type => :textarea %></td>
+		  <td><%= best_in_place @item, :reserve, :as => :checkbox, collection: {false: "No", true: "Yes"}  %></td>
+		  <td><%= best_in_place @item, :maturity, :type => :date %></td>
 		  		  <td><%= best_in_place @item, :active, as: :checkbox, collection: {false: "No", true: "Yes"}  %></td>
 		  <td><%= #@item.category.name
 		  #@item collection_select :category_id, Category.all, :id, :name 
 		  	best_in_place @item, :category_id, :as => :select, :collection => Category.all.map { |i| [i.id, i.name] } %></td>
 		  <td><%= best_in_place @item, :interval_id, :as => :select, :collection => Interval.all.map { |i| [i.id, i.description] } %></td>
 		  <td><%= best_in_place @item, :key_words, :as => :input, :type => :textarea %></td>
-	      <td><%= link_to 'Destroy', item_path(@item),
-	          method: :delete,
-	          data: { confirm: 'Are you sure?' } %></td>
+	      <td><%= #link_to 'Destroy', item_path(@item), method: :delete, data: { confirm: 'Are you sure?' } 
+	      %></td>
 	    </tr>
     </tbody>
     <tfoot>

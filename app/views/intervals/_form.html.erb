@@ -1,7 +1,7 @@
-<%= form_with(model: interval, local: true) do |form| %>
-  <% if interval.errors.any? %>
+<%= form_with(model: @interval, local: true) do |form| %>
+  <% if @interval.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(interval.errors.count, "error") %> prohibited this interval from being saved:</h2>
+      <h2><%= pluralize(@interval.errors.count, "error") %> prohibited this interval from being saved:</h2>
 
       <ul>
       <% interval.errors.full_messages.each do |message| %>
@@ -11,62 +11,25 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= form.label :numerator %>
-    <%= form.text_field :numerator, id: :interval_numerator %>
-  </div>
-
-  <div class="field">
-    <%= form.label :denominator %>
-    <%= form.text_field :denominator, id: :interval_denominator %>
-  </div>
-
-  <div class="field">
-    <%= form.label :description %>
-    <%= form.text_field :description, id: :interval_description %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
-<% end %>
-<% end %>
-
-<%= form_with(model: @navigation, local: true) do |form| %>
-  <% if @navigation.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@navigation.errors.count, "error") %> prohibited this navigation from being saved:</h2>
-
-      <ul>
-      <% @navigation.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
 <% end %>
 
 <table id="example2" class="table table-bordered table-hover">     
 	<thead>
     	<tr>
 			<th>#</th>
-			<th>Display text</th>
-			<th>URL</th>
-			<th>HTML class</th>
-			<th>Parent</th>
-			<th colspan="1"></th>
+			<th>Name</th>
+			<th>Numerator</th>
+			<th>Denominator</th>
+			<th>Description</th>
         </tr>
 	</thead>
 	<tbody>
 	    <tr>
-	      <td><%= @navigation.id %></td>
-		  <td><%= best_in_place @navigation, :display_text, :as => :input %></td>
-		  <td><%= best_in_place @navigation, :url, :as => :input %></td>
-		  <td><%= best_in_place @navigation, :html_class, :as => :input %></td>
-		  <td><%= best_in_place @navigation, :parent, :as => :select, :collection => Navigation.all.map { |i| [i.id, i.display_text] } %></td>
-	      <td><%= link_to 'Destroy', navigation_path(@navigation),
-	          method: :delete,
-	          data: { confirm: 'Are you sure?' } %></td>
+	      <td><%= @interval.id %></td>
+	      <td><%= best_in_place @interval, :name, :as => :input %></td>
+		  <td><%= best_in_place @interval, :numerator, :as => :input %></td>
+		  <td><%= best_in_place @interval, :denominator, :as => :input %></td>
+		  <td><%= best_in_place @interval, :description, :as => :input %></td>
 	    </tr>
     </tbody>
     <tfoot>

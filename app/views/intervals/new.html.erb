@@ -1,5 +1,36 @@
-<h1>New Interval</h1>
-
-<%= render 'form', interval: @interval %>
-
-<%= link_to 'Back', intervals_path %>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+	<!-- Content Header (Page header) -->
+	<section class="content-header">
+		<h1><%= @interval.name %>
+		  <small>edit data</small>
+		</h1>
+		<%= render 'navigations/navigation_bar' %>
+	</section>
+	<!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+          	
+          	<p id="notice"><%= notice %></p>
+          <!--
+            <div class="box-header">
+              <h3 class="box-title">Data Table With Full Features</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+				<%= render 'form' %>
+				<%= link_to 'Back', intervals_path %>
+		    </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+	</section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->

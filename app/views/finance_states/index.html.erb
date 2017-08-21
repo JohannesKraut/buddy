@@ -4,7 +4,7 @@
 	<section class="content-header">
 		<h1> Monthly planning <small>Income vs. expenses</small></h1>
 	  	<%= render 'navigations/navigation_bar' %>
-	  	<p id="notice"><%= notice %></p>
+	  	<%= render 'layouts/state_info' %>
 	</section>
 	<!-- Main content -->
 	<section class="content">
@@ -35,7 +35,6 @@
 						      <th>Account</th>
 						      <th>Edit</th>
 						      <th>Delete</th>
-						      <th colspan="3"></th>
 						    </tr>
 						  </thead>
 							<tbody>
@@ -50,6 +49,12 @@
 			<!-- /.col -->
 		</div>
 		<!-- /.row -->
+		<div>
+			<h4>Create statistics</h4>
+			<%= form_tag synchronize_finance_states_path, multipart: true do %>
+			<%= submit_tag "Create statistics" %>
+			<% end %>
+		</div>
 		<div>
 			<h4>Import Statistics</h4>
 			<%= form_tag import_finance_states_path, multipart: true do %>

@@ -23,7 +23,9 @@ private
         finance_state.period,
         finance_state.hibiscus_sync_id,
         finance_state.balance,
-        finance_state.account_id
+        finance_state.account_id,
+        link_to('Edit', finance_state),
+        link_to('Destroy', finance_state, method: :delete, data: { confirm: 'Are you sure?' })  
       ]
       data.push(row)
     end

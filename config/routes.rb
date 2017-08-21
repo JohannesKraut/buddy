@@ -33,6 +33,7 @@ Rails.application.routes.draw do
   
   resources :finance_states do
     collection { post :import }
+    collection { post :synchronize }
   end
   
   resources :monthly_statistics do

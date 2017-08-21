@@ -3,8 +3,8 @@ $(document).ready(function() {
 	console.log('best_in_place initialized');
   /* Activating Best In Place */
   jQuery(".best_in_place").best_in_place();
-  $('.best_in_place').bind("ajax:success", function () {$(this).closest('tr').effect('highlight'); });
-
+  $('.best_in_place').bind("ajax:success", function () {$(this).closest('td').effect('highlight'); });
+	$('.best_in_place').bind("ajax:success", function(){ alert('Name updated for '+$(this).data('message')); });
 });
 
 function myFunction(tableId) {

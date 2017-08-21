@@ -20,10 +20,13 @@ private
     data = Array.new
     intervals.all.order(:name).each_with_index do |interval, index|
       row = [
+        interval.id,
+        link_to(interval.name, interval),        
         interval.numerator,
         interval.denominator,
         interval.description,
-        interval.name
+        link_to('Edit', interval),
+        link_to('Destroy', interval, method: :delete, data: { confirm: 'Are you sure?' }) 
       ]
       data.push(row)
     end
@@ -74,7 +77,7 @@ private
   def get_columns
     #return @columns
     columns = Hash.new
-    columns = {"0" => "numerator", "1" => "denominator", "2" => "description", "3" => "name"}
+    columns = {"0" => "id", "1" => "name", "2" => "numerator", "3" => "denominator", "4" => "description", "5" => "destroy"}
     return columns
   end
 

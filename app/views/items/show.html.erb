@@ -7,6 +7,7 @@
 		  <small>edit data</small>
 		</h1>
 		<%= render 'navigations/navigation_bar' %>
+		<%= render 'layouts/state_info' %>
 	</section>
 	<!-- Main content -->
     <section class="content">
@@ -21,7 +22,7 @@
             <!-- /.box-header -->
             <div class="box-body">
 				<%= render 'form' %>
-				<%= link_to 'Edit', item_path(@item) %> |
+				<%= link_to 'Edit', edit_item_path(@item) %> |
 				<%= link_to 'Back', items_path %>
 		    </div>
             <!-- /.box-body -->

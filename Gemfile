@@ -29,6 +29,7 @@ gem 'bootstrap-wysihtml5-rails'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
 # end
 
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
@@ -60,7 +61,6 @@ gem 'autoprefixer-rails'
 
 gem 'jquery-datatables-rails', '~> 3.4.0'
 
-gem 'jquery-ui-rails'
 # start
 gem 'will_paginate'
 
