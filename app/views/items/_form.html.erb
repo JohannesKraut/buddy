@@ -1,18 +1,4 @@
-<%= form_with(model: @item, local: true) do |form| %>
-  <% if @item.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@item.errors.count, "error") %> prohibited this item from being saved:</h2>
-
-      <ul>
-      <% @item.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
- <% end %> 
- 
-<table id="example2" class="table table-bordered table-hover">     
+<!-- ><table id="example2" class="table table-bordered table-hover">     
 	<thead>
     	<tr>
 									<th>Order</th>
@@ -34,7 +20,7 @@
 		  <td><%= best_in_place @item, :name, :as => :input, :type => :textarea %></td>
 		  <td><%= best_in_place @item, :total_amount, :as => :input, :type => :textarea, :data => {:message => @item.amount_calculated} %></td>
 		  <!-- ><td><%= best_in_place @item, :amount_calculated,:display_as => :calculate_planned_value, :as => :input, :type => :textarea %></td> -->
-		  <td><%= best_in_place @item, :amount_calculated, :as => :input, :type => :textarea %></td>
+		  <!-- ><td><%= best_in_place @item, :amount_calculated, :as => :input, :type => :textarea %></td>
 		  <td><%= best_in_place @item, :reserve, :as => :checkbox, collection: {false: "No", true: "Yes"}  %></td>
 		  <td><%= best_in_place @item, :maturity, :type => :date %></td>
 		  		  <td><%= best_in_place @item, :active, as: :checkbox, collection: {false: "No", true: "Yes"}  %></td>
@@ -49,4 +35,122 @@
     </tbody>
     <tfoot>
    	</tfoot>
-</table>
+</table> -->
+
+<%= form_with(model: @item, local: true) do |form| %>
+  <% if @item.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@item.errors.count, "error") %> prohibited this item from being saved:</h2>
+
+      <ul>
+      <% @item.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <!-- general form elements -->
+  <div class="box box-primary">
+    <div class="box-header with-border">
+      <h3 class="box-title">Edit data</h3>
+    </div>
+    <!-- /.box-header -->
+    <!-- form start -->
+    <form role="form">
+      <div class="box-body">
+        <div class="form-group">
+          <label for="exampleInputEmail1">Email address</label>
+          <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+        </div>
+ 
+                <div class="checkbox">
+          <label>
+            <input type="checkbox"> Check me out
+          </label>
+        </div>
+      </div>
+      <!-- /.box-body -->
+
+
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Email address</label>
+                  <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                </div>
+
+  <div class="form-group">
+	  <div class="field">
+	    <%= form.label :order_id %>
+	    <%= form.number_field :order_id, id: :item_order_id , class: "form-control", placeholder: "Test"%>
+	  </div>
+  </div>
+  <div class="form-group">
+	 <div class="field">
+    	<%= form.label :name %>
+    	<%= form.text_field :name, id: :item_name, class: "form-control", placeholder: "Test" %>
+	 </div>
+  </div>
+
+  <div class="form-group">
+	<div class="field">
+    	<%= form.label :total_amount %>
+    	<%= form.text_field :total_amount, id: :item_total_amount, class: "form-control", placeholder: "Test"%>
+  	</div>
+  </div>
+  <div class="form-group">
+	<div class="field">
+    	<%= form.label :amount_calculated %>
+    	<%= form.text_field :amount_calculated, id: :item_amount_calculated, class: "form-control", placeholder: "Test", disabled: true %>
+  	</div>
+  </div>
+  <div class="form-group">
+	<div class="field">
+    <%= form.label :reserve %>
+    <%= form.check_box :reserve, id: :item_reserve %>
+  	</div>
+  </div>
+
+  <div class="form-group">
+  	<%= form.label :maturity %>
+  	<div class="input-group date">
+      <div class="input-group-addon">
+        <i class="fa fa-calendar"></i>
+      </div>
+      
+      <%= form.text_field :maturity, id: :item_maturity, class: "form-control pull-right" %>
+    </div>
+    <!-- /.input group -->
+  </div>
+ 
+  <div class="form-group">
+	<div class="field">
+    <%= form.label :active %>
+    <%= form.check_box :active, id: :item_active, class: "checkbox" %>
+  	</div>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :category_id %>
+    <%= form.collection_select :category_id, Category.all ,:id, :name, class: "form-control select2", style: "width: 100%;" %>
+  </div>
+
+  <div class="form-group">
+	<div class="field">
+    <%= form.label :interval_id %>
+    <%= form.text_field :interval_id, id: :item_interval_id %>
+  	</div>
+  </div>
+
+        <div class="box-footer">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </form>
+  </div>
+  <!-- /.box -->
+<% end %>
+       <script type="text/javascript">
+          $('#item_maturity').datepicker({
+              autoclose: true,
+              format: 'dd-mm-yyyy',
+              language: 'de'
+            });
+            </script>

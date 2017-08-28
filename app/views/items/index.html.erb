@@ -57,12 +57,14 @@
 		</div>
 		<!-- /.row -->
 		<div>
-			<h4>Import items</h4>
-			<%= form_tag import_items_path, multipart: true do %>
+	    <div class="form-group">
+          <label for="itemsInputFile">Import as CSV</label>
+          	<%= form_tag import_items_path, multipart: true do %>
 			<%= file_field_tag :file %>
-			<%= submit_tag "Import CSV" %>
+			<button type="submit" class="btn btn-primary">Submit</button>
 			<% end %>
-		</div>
+        </div>
+
 	</section>
 	<!-- /.content -->
 </div>

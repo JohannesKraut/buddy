@@ -14,6 +14,8 @@
 //= require bootstrap-sprockets
 //= require bootstrap-wysihtml5
 //= require bootstrap-wysihtml5/locales
+//= require bootstrap-datepicker/core
+//= require bootstrap-datepicker/locales/bootstrap-datepicker.de.js
 //= require adminlte
 //= require dataTables/jquery.dataTables
 //= require best_in_place

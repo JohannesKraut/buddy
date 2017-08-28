@@ -25,6 +25,7 @@ gem 'coffee-rails', '~> 4.2'
 ########
 gem 'bootstrap-sass'
 gem 'bootstrap-wysihtml5-rails'
+gem 'bootstrap-datepicker-rails'
 #######
 
 # Use jquery as the JavaScript library
