@@ -58,99 +58,116 @@
     <!-- form start -->
     <form role="form">
       <div class="box-body">
-        <div class="form-group">
-          <label for="exampleInputEmail1">Email address</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
-        </div>
- 
-                <div class="checkbox">
-          <label>
-            <input type="checkbox"> Check me out
-          </label>
-        </div>
-      </div>
-      <!-- /.box-body -->
-
-
-                <div class="form-group">
-                  <label for="exampleInputEmail1">Email address</label>
-                  <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
-                </div>
-
-  <div class="form-group">
-	  <div class="field">
-	    <%= form.label :order_id %>
-	    <%= form.number_field :order_id, id: :item_order_id , class: "form-control", placeholder: "Test"%>
+	  <div class="form-group">
+		 <div class="field">
+	    	<%= form.label :name %>
+	    	<%= form.text_field :name, id: :item_name, class: "form-control", placeholder: "Test" %>
+		 </div>
 	  </div>
-  </div>
-  <div class="form-group">
-	 <div class="field">
-    	<%= form.label :name %>
-    	<%= form.text_field :name, id: :item_name, class: "form-control", placeholder: "Test" %>
-	 </div>
-  </div>
+	  
+	 <div class="form-group">
+	    <%= form.label :category_id %>
+	    <%= form.collection_select :category_id, Category.all ,:id, :name, {}, {class: "form-control select2"} %>
+	  </div>
+	
+	  <div class="form-group">
+		<div class="field">
+	    	<%= form.label :total_amount %>
+	    	<%= form.text_field :total_amount, id: :item_total_amount, class: "form-control", placeholder: "Test"%>
+	  	</div>
+	  </div>
+	  <div class="form-group">
+		<div class="field">
+	    <%= form.label :interval_id %>
+	    <%= #form.collection_select :interval_id, Interval.all ,:id, :name, {}, {class: "form-control select2", :onchange=>"calculate_amount()", :id => "item_interval_id" }
+	    %>
+	  	<%= form.collection_select :interval_id, Interval.all ,:id, :name, {}, {class: "form-control select2", :id => "item_interval_id" }%>
+	  	</div>
+	  </div>
+	  <div class="form-group">
+		<div class="field">
+	    	<%= form.label :amount_calculated %>
+	    	<%= form.text_field :amount_calculated, id: :item_amount_calculated, class: "form-control", placeholder: "Test", readonly: true %>
+	  	</div>
+	  </div>
+	  		<div class="form-group">
+		  <div class="field">
+		    <%= form.label :key_words %>
+		    <%= form.text_field :key_words, id: :item_key_words , class: "form-control", placeholder: "Test" %>
+		  </div>
+	  	</div>
 
-  <div class="form-group">
-	<div class="field">
-    	<%= form.label :total_amount %>
-    	<%= form.text_field :total_amount, id: :item_total_amount, class: "form-control", placeholder: "Test"%>
-  	</div>
-  </div>
-  <div class="form-group">
-	<div class="field">
-    	<%= form.label :amount_calculated %>
-    	<%= form.text_field :amount_calculated, id: :item_amount_calculated, class: "form-control", placeholder: "Test", disabled: true %>
-  	</div>
-  </div>
-  <div class="form-group">
-	<div class="field">
-    <%= form.label :reserve %>
-    <%= form.check_box :reserve, id: :item_reserve %>
-  	</div>
-  </div>
-
-  <div class="form-group">
-  	<%= form.label :maturity %>
-  	<div class="input-group date">
-      <div class="input-group-addon">
-        <i class="fa fa-calendar"></i>
-      </div>
-      
-      <%= form.text_field :maturity, id: :item_maturity, class: "form-control pull-right" %>
+	  <div class="form-group">
+	  	<%= form.label :maturity %>
+	  	<div class="input-group date">
+	      <div class="input-group-addon">
+	        <i class="fa fa-calendar"></i>
+	      </div>
+	      <%= form.text_field :maturity, id: :item_maturity, class: "form-control pull-right" %>
+	    </div>
+	    <!-- /.input group -->
+	  </div>
+	    <div class="form-group">
+	    	<%= content_tag(:div, :class => "checkbox") do %>
+				<%= content_tag(:label) do %>
+		    		<%= form.check_box(:reserve, id: :item_reserve, class: "checkbox") + :reserve %>
+		    	<% end %>
+			<% end %>
+		  </div>	
+	    <div class="form-group">
+	    	<%= content_tag(:div, :class => "checkbox") do %>
+				<%= content_tag(:label) do %>
+					<%= form.check_box(:active, id: :item_active, class: "checkbox") + :active %>
+				<% end %>
+			<% end %>
+		</div>
+		<div class="form-group">
+		  <div class="field">
+		    <%= form.label :order_id %>
+		    <%= form.number_field :order_id, id: :item_order_id , class: "form-control", placeholder: "Test" %>
+		  </div>
+	  	</div>
+		
     </div>
-    <!-- /.input group -->
-  </div>
- 
-  <div class="form-group">
-	<div class="field">
-    <%= form.label :active %>
-    <%= form.check_box :active, id: :item_active, class: "checkbox" %>
+  	<!-- /.box-body -->
+    <div class="box-footer">
+    	<button type="submit" class="btn btn-primary">Submit</button>
   	</div>
-  </div>
-
-  <div class="form-group">
-    <%= form.label :category_id %>
-    <%= form.collection_select :category_id, Category.all ,:id, :name, class: "form-control select2", style: "width: 100%;" %>
-  </div>
-
-  <div class="form-group">
-	<div class="field">
-    <%= form.label :interval_id %>
-    <%= form.text_field :interval_id, id: :item_interval_id %>
-  	</div>
-  </div>
-
-        <div class="box-footer">
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </div>
-    </form>
+	</form>
   </div>
   <!-- /.box -->
 <% end %>
-       <script type="text/javascript">
-          $('#item_maturity').datepicker({
-              autoclose: true,
-              format: 'dd-mm-yyyy',
-              language: 'de'
-            });
-            </script>
+
+<script type="text/javascript">
+	$('#item_maturity').datepicker({
+ 			autoclose: true,
+	      	format: 'dd-mm-yyyy',
+	      	language: 'de'
+	});
+
+	$('#item_interval_id').change(function() {
+		update_amount_calculated($(this).val());
+	});
+	
+	$('#item_total_amount').change(function() {
+		update_amount_calculated($(this).val());
+	});
+	
+	function update_amount_calculated(input){
+		var interval_id = $('#item_interval_id').val();
+		var item_id = <%= @item.id %>;
+		var total_amount = $('#item_total_amount').val();
+		if (input != undefined) {
+			$.ajax({
+				url: "/calculate_amount",
+				data: {'item': item_id, 'interval': interval_id, 'amount': total_amount},
+				dataType: "json",
+				type: "GET",
+				success: function(data) {
+					$('#item_amount_calculated').val(data["amount_calculated"]).text(data["amount_calculated"]);
+				}
+			})
+		}
+	};
+</script>
+

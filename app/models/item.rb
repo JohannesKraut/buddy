@@ -8,7 +8,7 @@ class Item < ApplicationRecord
     @multiplier = Rational(@interval.numerator * @interval.denominator)
     
     calculate_planned_value = @multiplier * total_amount 
-    @item.update(amount_calculated: calculate_planned_value)
+    #@item.update(amount_calculated: calculate_planned_value)
     #amount_calculated = calculate_planned_value
   end
  

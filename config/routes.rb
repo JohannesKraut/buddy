@@ -11,8 +11,11 @@ Rails.application.routes.draw do
   
   root 'dashboard#dashboard'
   
+  get '/calculate_amount', to: 'items#calculate_amount'
+
+  
   resources :items do
-    collection { post :import }
+    collection { post :import }  
   end
   
   resources :categories do
