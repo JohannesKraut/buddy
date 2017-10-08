@@ -1,4 +1,5 @@
 class Account < ApplicationRecord
+  has_many :items
 
   require 'csv'
   #uses import method of referenced class CSV

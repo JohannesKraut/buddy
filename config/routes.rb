@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   
   get '/calculate_amount', to: 'items#calculate_amount'
 
+  #get '/delete_all', to: 'monthly_statistics#delete_all'
   
   resources :items do
     collection { post :import }  
@@ -37,10 +38,12 @@ Rails.application.routes.draw do
   resources :finance_states do
     collection { post :import }
     collection { post :synchronize }
+    collection { post :delete_all }
   end
   
   resources :monthly_statistics do
     collection { post :import }
+    collection { post :delete_all }
   end
     
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

@@ -70,6 +70,11 @@ class MonthlyStatisticsController < ApplicationController
     MonthlyStatistic.import(params[:file])
     redirect_to monthly_statistics_path, notice: "Statistics data imported"
   end
+  
+  def delete_all
+    MonthlyStatistic.delete_all
+    redirect_to monthly_statistics_path, notice: "All items deleted"    
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -79,6 +84,7 @@ class MonthlyStatisticsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def monthly_statistic_params
-      params.require(:monthly_statistic).permit(:period, :planned_value, :actual_value, :item_id, :hibiscus_sync_id)
+      params.require(:monthly_statistic).permit(:period, :planned_value, :actual_value, :item_id, :hibiscus_sync_id, :match_confidence, :match_type, :match_value, :account_id)
     end
+
 end

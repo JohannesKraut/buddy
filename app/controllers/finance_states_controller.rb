@@ -77,6 +77,11 @@ class FinanceStatesController < ApplicationController
     FinanceState.import(params[:file])
     redirect_to finance_states_path, notice: "Finance state data imported"
   end
+  
+  def delete_all
+    FinanceState.delete_all
+    redirect_to finance_states_path, notice: "All finance states deleted"    
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

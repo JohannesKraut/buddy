@@ -90,13 +90,24 @@
 	    	<%= form.text_field :amount_calculated, id: :item_amount_calculated, class: "form-control", placeholder: "Test", readonly: true %>
 	  	</div>
 	  </div>
+	  <div class="form-group">
+		<div class="field">
+	    	<%= form.label :external_account %>
+	    	<%= form.text_field :external_account, id: :item_external_account, class: "form-control", placeholder: "Test"%>
+	  	</div>
+	  </div>
 	  		<div class="form-group">
 		  <div class="field">
 		    <%= form.label :key_words %>
 		    <%= form.text_field :key_words, id: :item_key_words , class: "form-control", placeholder: "Test" %>
 		  </div>
 	  	</div>
-
+		<div class="form-group">
+		  <div class="field">
+		    <%= form.label :account_id %>
+		    <%= form.collection_select :account_id, Account.all ,:id, :description, {:include_blank => true}, {class: "form-control select2", :id => "item_account_id" }%>
+		  </div>
+	  	</div>
 	  <div class="form-group">
 	  	<%= form.label :maturity %>
 	  	<div class="input-group date">

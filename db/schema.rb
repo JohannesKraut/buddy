@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170808120412) do
+ActiveRecord::Schema.define(version: 20171008194518) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "account_number"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 20170808120412) do
     t.string "bic"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "hibiscus_account_id"
   end
 
   create_table "categories", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -36,6 +37,11 @@ ActiveRecord::Schema.define(version: 20170808120412) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_finance_states_on_account_id"
+  end
+
+  create_table "hibiscus_accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "hibiscus_transactions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -65,6 +71,9 @@ ActiveRecord::Schema.define(version: 20170808120412) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "key_words"
+    t.bigint "account_id"
+    t.string "external_account"
+    t.index ["account_id"], name: "index_items_on_account_id"
     t.index ["category_id"], name: "index_items_on_category_id"
     t.index ["interval_id"], name: "index_items_on_interval_id"
   end
@@ -77,6 +86,11 @@ ActiveRecord::Schema.define(version: 20170808120412) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "hibiscus_sync_id"
+    t.decimal "match_confidence", precision: 8, scale: 2
+    t.string "match_type"
+    t.string "match_value"
+    t.bigint "account_id"
+    t.index ["account_id"], name: "index_monthly_statistics_on_account_id"
     t.index ["item_id"], name: "index_monthly_statistics_on_item_id"
   end
 
@@ -91,7 +105,9 @@ ActiveRecord::Schema.define(version: 20170808120412) do
   end
 
   add_foreign_key "finance_states", "accounts"
+  add_foreign_key "items", "accounts"
   add_foreign_key "items", "categories"
   add_foreign_key "items", "intervals"
+  add_foreign_key "monthly_statistics", "accounts"
   add_foreign_key "monthly_statistics", "items"
 end

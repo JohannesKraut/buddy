@@ -26,17 +26,62 @@ private
     data = Array.new
     #"0" => "id", "1" => "period", "2" => "item_id", "3" => "planned_value", "4" => "actual_value"
     monthly_statistics.all.order(:period).each_with_index do |monthly_statistic, index|
+      @transaction = find_transaction(monthly_statistic.hibiscus_sync_id)
+      
       row = [
         link_to(monthly_statistic.id, monthly_statistic),
         monthly_statistic.period,
-        Item.find(monthly_statistic.item_id).name,
+        monthly_statistic.account_id,
+        find_item(monthly_statistic.item_id),
         monthly_statistic.planned_value,
         monthly_statistic.actual_value,
-        monthly_statistic.hibiscus_sync_id
+        monthly_statistic.hibiscus_sync_id,
+        monthly_statistic.match_confidence,
+        monthly_statistic.match_type,
+        monthly_statistic.match_value,
+        @transaction["text"] 
       ]
       data.push(row)
     end
     return data
+  end
+  
+  def find_transaction(hibiscus_sync_id)
+    @return = Hash.new
+    @return["text"] = ''
+    @return["account"] = ''
+    @return["type"] = ''
+
+    if HibiscusTransaction.where(id: hibiscus_sync_id).exists?
+      @transaction = HibiscusTransaction.find(hibiscus_sync_id)
+      if @transaction.zweck.present?
+        @return["text"] += @transaction.zweck
+      end
+      if @transaction.zweck2.present?
+        @return["text"] += @transaction.zweck2
+      end
+      if @transaction.zweck3.present?
+        @return["text"] += @transaction.zweck3
+      end
+      
+      if @transaction.art.present?
+        @return["account"] = @transaction.konto_id
+      end
+      
+      if @transaction.art.present?
+        @return["type"] = @transaction.art
+      end
+    end
+    return @return 
+  end
+  
+    def find_item(item_id)
+    if Item.where(id: item_id).exists?
+      @return = Item.find(item_id).name
+    else
+      @return = ''
+    end
+    return @return
   end
  
   def monthly_statistics
@@ -83,7 +128,7 @@ private
   def get_columns
     columns = Hash.new
     #:period, :planned_value, :actual_value, :item_id
-    columns = {"0" => "id", "1" => "period", "2" => "item_id", "3" => "planned_value", "4" => "actual_value", "5" => "hibiscus_sync_id"}
+    columns = {"0" => "id", "1" => "period", "2" => "item_id", "3" => "planned_value", "4" => "actual_value", "5" => "hibiscus_sync_id", "6" => "match_confidence", "7" => "match_type", "8" => "match_value", "9" => "text"}
     return columns
   end
 

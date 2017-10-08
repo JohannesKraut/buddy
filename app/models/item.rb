@@ -1,6 +1,7 @@
 class Item < ApplicationRecord
   belongs_to :category
   belongs_to :interval
+  belongs_to :account, optional: true
   
   def calculate_planned_value
     @item = Item.find(id)

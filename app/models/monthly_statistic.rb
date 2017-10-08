@@ -1,5 +1,5 @@
 class MonthlyStatistic < ApplicationRecord
-  belongs_to :item
+  belongs_to :item, optional: true
   
   require 'csv'
   #uses import method of referenced class CSV

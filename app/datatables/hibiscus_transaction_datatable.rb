@@ -1,4 +1,4 @@
-class AccountsDatatable
+class HibiscusTransactionDatatable
   delegate :params, :h, :link_to, to: :@view
     
   def initialize(view)
@@ -8,8 +8,8 @@ class AccountsDatatable
   def as_json(options = {})
     {
       sEcho: params[:sEcho].to_i,
-      iTotalRecords: Account.count,
-      iTotalDisplayRecords: accounts.total_entries,
+      iTotalRecords: HibiscusTransaction.count,
+      iTotalDisplayRecords: hibiscus_transactions.total_entries,
       aaData: data
     }
   end
@@ -18,34 +18,31 @@ private
 
   def data
     data = Array.new
-    accounts.all.order(:id).each_with_index do |account, index|
+    hibiscus_transactions.all.order(:id).each_with_index do |category, index|
       row = [
-        account.id,
-        account.account_number,
-        account.description,
-        account.iban,
-        account.bic,
-        account.hibiscus_account_id,
-        link_to('Edit', account),
-        link_to('Destroy', account, method: :delete, data: { confirm: 'Are you sure?' })
+        category.id,
+        category.name,
+        category.description,
+        link_to('Edit', category),
+        link_to('Destroy', category, method: :delete, data: { confirm: 'Are you sure?' })
       ]
       data.push(row)
     end
     return data
   end
  
-  def accounts
-    @accounts ||= fetch_accounts
+  def hibiscus_transactions
+    @hibiscus_transactions ||= fetch_hibiscus_transactions
   end
 
-  def fetch_accounts
-    accounts = Account.order("#{sort_column} #{sort_direction}")
-    accounts = accounts.page(page).per_page(per_page)
+  def fetch_hibiscus_transactions
+    hibiscus_transactions = HibiscusTransaction.order("#{sort_column} #{sort_direction}")
+    hibiscus_transactions = hibiscus_transactions.page(page).per_page(per_page)
     if params[:sSearch].present?
       #search globally (in every column) -> 'OR'
       where_clause = ""
       get_columns.each_with_index do |column, index|  #key = "0", value = "order_id"
-        if params["bSearchable_"+column[0]] == "true" and Account.column_names.include? column[1]
+        if params["bSearchable_"+column[0]] == "true" and HibiscusTransaction.column_names.include? column[1]
           if index == 0
             where_clause = column[1] + " like :search"
             puts where_clause
@@ -56,29 +53,29 @@ private
         puts where_clause
       end
       
-      accounts = accounts.where(where_clause, search: "%#{params[:sSearch]}%")
+      hibiscus_transactions = hibiscus_transactions.where(where_clause, search: "%#{params[:sSearch]}%")
     else
       #search in specific column(s) -> 'AND'
       params.each do |param|   
         if param.start_with?("sSearch_")
           column_no = param[-1]           #sSearch_0 -> 0
-          if params["bSearchable_"+column_no] == "true" and Account.column_names.include? get_columns[column_no]
+          if params["bSearchable_"+column_no] == "true" and HibiscusTransaction.column_names.include? get_columns[column_no]
             if params[param].length > 0
               where_clause = get_columns[column_no].to_s + " like :search"
-              accounts = accounts.where(where_clause, search: "%#{params[param]}%")      
+              hibiscus_transactions = hibiscus_transactions.where(where_clause, search: "%#{params[param]}%")      
             end
           end
         end
       end
     end
     #return collected items
-    accounts
+    hibiscus_transactions
   end
   
   def get_columns
     #return @columns
     columns = Hash.new
-    columns = {"0" => "account_number", "1" => "description", "2" => "iban", "3" => "bic", "4" => "Edit", "5" => "Destroy"}
+    columns = {"0" => "id", "1" => "name", "2" => "description", "3" => "description"}
     return columns
   end
 
@@ -93,14 +90,14 @@ private
   def per_page
     #params[:iDisplayLength].to_i > 0 ? params[:iDisplayLength].to_i : 10
     if params[:iDisplayLength].to_i < 0
-      return Account.count
+      return HibiscusTransaction.count
      else
       return params[:iDisplayLength].to_i
     end
   end
 
   def sort_column
-    columns = %w[id]
+    columns = %w[id name]
     columns[params[:iSortCol_0].to_i]
   end
 

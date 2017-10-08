@@ -37,9 +37,11 @@ private
         item.reserve,
         item.maturity,
         item.active,
-        item.category_id,
-        item.interval_id,
+        Category.find(item.category_id).name,
+        Interval.find(item.interval_id).name,
         @rollup,
+        find_account(item.account_id),
+        item.external_account,
         item.key_words       
       ]
       puts data
@@ -58,6 +60,15 @@ private
     #    item.active
     #  ]
     #end
+  end
+  
+  def find_account(account_id)
+    if Account.where(id: account_id).exists?
+      @return = Account.find(account_id).description
+    else
+      @return = ''
+    end
+    return @return
   end
  
   def items

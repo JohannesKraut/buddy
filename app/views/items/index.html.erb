@@ -24,7 +24,14 @@
 								</tr>
 							</thead>
 							<tbody>
-
+					            <tr id="filter_col8" data-column="7">
+					                <td>Column - Name</td>
+					                <td align="center"><%= select_tag "col7_filter", options_from_collection_for_select(Category.all, "id", "name"), include_blank: "All", class:"column_filter" %> </td>
+					            </tr>
+					            <tr id="filter_col7" data-column="6">
+					                <td>Column - Salary</td>
+					                <td align="center"><%= select_tag "col6_filter", options_for_select([['Active', "1"],['Inactive', "0"]]), include_blank: "All", class:"column_filter" %> </td>
+					            </tr> 
 							</tbody>
 						</table>
 						<table id="example1" class="display" data-source="<%= items_url(format: "json") %>">
@@ -40,6 +47,8 @@
 									<th>Category</th>
 									<th>Interval</th>
 									<th>Rollup</th>
+									<th>Account</th>
+									<th>External account</th>
 									<th>Key words</th>
 									<th colspan="3"></th>
 								</tr>
