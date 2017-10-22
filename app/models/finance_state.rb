@@ -31,8 +31,8 @@ class FinanceState < ApplicationRecord
           
           
           @hibiscus_sync_id = transaction.id
-          @period = transaction.valuta
-          @actual_value = transaction.betrag
+          @period = transaction.valuta.to_date
+          @actual_value = transaction.betrag.to_f
           @item_id = nil
           @planned_value = nil
           @match_confidence = nil
@@ -129,14 +129,15 @@ class FinanceState < ApplicationRecord
     
     # match via (internal/default) account
     if item.account_id.present?
-      #if account.id == item.account_id
-      #if transaction.empfaenger_konto == Account.find(item.account_id).iban
-      @confidence = @return["confidence"].to_f
-      if @confidence == 0
-        @return["match_type"] = "default"
-        @return["match_value"] = item.account_id        
-        logger.debug "TRANSACTION FOUND BY ACCOUNT " + account.description
-      end 
+      if account.id == item.account_id
+        #if transaction.empfaenger_konto == Account.find(item.account_id).iban
+        @confidence = @return["confidence"].to_f
+        if @confidence == 0
+          @return["match_type"] = "default"
+          @return["match_value"] = item.account_id        
+          logger.debug "TRANSACTION FOUND BY ACCOUNT " + account.description
+        end
+      end
     end
     return @return
   end
@@ -172,7 +173,7 @@ class FinanceState < ApplicationRecord
       logger.debug "CURRENT TRANSACTION ART: " + transaction.art.to_s
       
       #@key_words = /#{key_word}/im
-      @key_words = key_word.downcase
+      @key_words = key_word.delete(' ').downcase
       #if transaction.zweck.match(@key_words)
       if transaction.zweck.to_s.downcase.include? @key_words
       #if transaction.zweck =~ @key_words
@@ -209,7 +210,7 @@ class FinanceState < ApplicationRecord
       logger.debug "CURRENT TRANSACTION ZWECK3: " + transaction.zweck3.to_s
       
       #@key_words = /#{key_word}/im
-      @key_words = item_name.downcase
+      @key_words = item_name.delete(' ').downcase
       #if transaction.zweck.match(@key_words)
       if transaction.zweck.to_s.downcase.include? @key_words
       #if transaction.zweck =~ @key_words

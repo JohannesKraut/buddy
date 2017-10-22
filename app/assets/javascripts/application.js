@@ -18,5 +18,7 @@
 //= require bootstrap-datepicker/locales/bootstrap-datepicker.de.js
 //= require adminlte
 //= require dataTables/jquery.dataTables
+//= require Chart.bundle
+//= require chartkick
 //= require best_in_place
 //= require_tree .

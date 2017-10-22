@@ -30,6 +30,10 @@
 					            <tr id="filter_col3" data-column="2">
 					                <td>Column - Salary</td>
 					                <td align="center"><%= select_tag "col2_filter", options_from_collection_for_select(Account.all, "id", "description"), include_blank: "All",  class:"column_filter" %> </td>
+					            </tr>
+					            <tr id="filter_col4" data-column="3">
+					                <td>Column - Salary</td>
+					                <td align="center"><%= select_tag "col3_filter", options_for_select([['unmatched', nil]]), include_blank: "All",  class:"column_filter" %> </td>
 					            </tr> 
 							</tbody>
 						</table>

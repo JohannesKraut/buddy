@@ -65,6 +65,9 @@ gem 'jquery-datatables-rails', '~> 3.4.0'
 # start
 gem 'will_paginate'
 
+gem 'chart-js-rails'
+gem 'chartkick'
+gem 'groupdate'
 ###
 
 
