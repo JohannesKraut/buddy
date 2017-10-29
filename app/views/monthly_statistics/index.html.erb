@@ -27,13 +27,13 @@
 					                <td>Column - Salary</td>
 					                <td align="center"><%= select_tag "col7_filter", options_for_select([['external_account', "external_account"],['key_word', "key_word"],['item_name', "item_name"],['default', "default"]]), include_blank: "All", class:"column_filter" %> </td>
 					            </tr>
+					            <tr id="filter_col10" data-column="9">
+					                <td>Column - Salary</td>
+					                <td align="center"><%= select_tag "col9_filter", options_from_collection_for_select(Account.all, "id", "description"), include_blank: "All",  class:"column_filter" %> </td>
+					            </tr>
 					            <tr id="filter_col3" data-column="2">
 					                <td>Column - Salary</td>
-					                <td align="center"><%= select_tag "col2_filter", options_from_collection_for_select(Account.all, "id", "description"), include_blank: "All",  class:"column_filter" %> </td>
-					            </tr>
-					            <tr id="filter_col4" data-column="3">
-					                <td>Column - Salary</td>
-					                <td align="center"><%= select_tag "col3_filter", options_for_select([['unmatched', nil]]), include_blank: "All",  class:"column_filter" %> </td>
+					                <td align="center"><%= select_tag "col2_filter", options_from_collection_for_select(Item.where(:id => 34), "id", "name"), include_blank: "All",  class:"column_filter" %> </td>
 					            </tr> 
 							</tbody>
 						</table>

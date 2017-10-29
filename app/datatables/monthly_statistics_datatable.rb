@@ -128,7 +128,7 @@ private
   def get_columns
     columns = Hash.new
     #:period, :planned_value, :actual_value, :item_id
-    columns = {"0" => "id", "1" => "period", "2" => "item_id", "3" => "planned_value", "4" => "actual_value", "5" => "hibiscus_sync_id", "6" => "match_confidence", "7" => "match_type", "8" => "match_value", "9" => "text"}
+    columns = {"0" => "id", "1" => "period", "2" => "item_id", "3" => "planned_value", "4" => "actual_value", "5" => "hibiscus_sync_id", "6" => "match_confidence", "7" => "match_type", "8" => "match_value", "9" => "account_id"}
     return columns
   end
 

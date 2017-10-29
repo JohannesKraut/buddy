@@ -4,11 +4,14 @@ class Item < ApplicationRecord
   belongs_to :account, optional: true
   
   def calculate_planned_value
-    @item = Item.find(id)
-    @interval = Interval.find(interval_id)
-    @multiplier = Rational(@interval.numerator * @interval.denominator)
-    
-    calculate_planned_value = @multiplier * total_amount 
+    if id.present?
+      @item = Item.find(id)
+      @interval = Interval.find(interval_id)
+      @multiplier = Rational(@interval.numerator * @interval.denominator)
+      
+      calculate_planned_value = @multiplier * total_amount      
+    end
+
     #@item.update(amount_calculated: calculate_planned_value)
     #amount_calculated = calculate_planned_value
   end

@@ -29,12 +29,11 @@ class FinanceState < ApplicationRecord
           
           logger.debug "CURRENT HIBISCUS ID: " + transaction.id.to_s
           
-          
           @hibiscus_sync_id = transaction.id
           @period = transaction.valuta.to_date
           @actual_value = transaction.betrag.to_f
-          @item_id = nil
-          @planned_value = nil
+          @item_id = 34
+          @planned_value = Item.find(@item_id).amount_calculated
           @match_confidence = nil
           @match_type = nil
           @match_value = nil
@@ -175,23 +174,23 @@ class FinanceState < ApplicationRecord
       #@key_words = /#{key_word}/im
       @key_words = key_word.delete(' ').downcase
       #if transaction.zweck.match(@key_words)
-      if transaction.zweck.to_s.downcase.include? @key_words
+      if transaction.zweck.to_s.delete(' ').downcase.include? @key_words
       #if transaction.zweck =~ @key_words
         logger.debug "Zweck " + transaction.zweck.to_s
         return key_word
       end
       
-      if transaction.zweck2.to_s.downcase.include? @key_words
+      if transaction.zweck2.to_s.delete(' ').downcase.include? @key_words
         logger.debug "Zweck2 " + transaction.zweck2.to_s
         return key_word
       end
       
-      if transaction.zweck3.to_s.downcase.include? @key_words
+      if transaction.zweck3.to_s.delete(' ').downcase.include? @key_words
         logger.debug "Zweck3 " + transaction.zweck3.to_s
         return key_word
       end
       
-      if transaction.art.to_s.downcase.include? @key_words
+      if transaction.art.to_s.delete(' ').downcase.include? @key_words
         logger.debug "Art " + transaction.art.to_s
         return key_word
       end
@@ -212,18 +211,18 @@ class FinanceState < ApplicationRecord
       #@key_words = /#{key_word}/im
       @key_words = item_name.delete(' ').downcase
       #if transaction.zweck.match(@key_words)
-      if transaction.zweck.to_s.downcase.include? @key_words
+      if transaction.zweck.to_s.delete(' ').downcase.include? @key_words
       #if transaction.zweck =~ @key_words
         logger.debug "Zweck " + transaction.zweck.to_s
         return @key_words
       end
       
-      if transaction.zweck2.to_s.downcase.include? @key_words
+      if transaction.zweck2.to_s.delete(' ').downcase.include? @key_words
         logger.debug "Zweck2 " + transaction.zweck2.to_s
         return @key_words
       end
       
-      if transaction.zweck3.to_s.downcase.include? @key_words
+      if transaction.zweck3.to_s.delete(' ').downcase.include? @key_words
         logger.debug "Zweck3 " + transaction.zweck3.to_s
         return @key_words
       end
