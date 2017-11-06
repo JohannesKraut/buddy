@@ -6,6 +6,7 @@
 	  	<%= render 'navigations/navigation_bar' %>
 	  	<p id="notice"><%= notice %></p>
 	</section>
+	<%= render 'monthly_statistics/diagram' %>
 	<!-- Main content -->
 	<section class="content">
 		<div class="row">
@@ -23,17 +24,18 @@
 								</tr>
 							</thead>
 							<tbody>
-					            <tr id="filter_col8" data-column="7">
-					                <td>Column - Salary</td>
-					                <td align="center"><%= select_tag "col7_filter", options_for_select([['external_account', "external_account"],['key_word', "key_word"],['item_name', "item_name"],['default', "default"]]), include_blank: "All", class:"column_filter" %> </td>
-					            </tr>
-					            <tr id="filter_col10" data-column="9">
-					                <td>Column - Salary</td>
-					                <td align="center"><%= select_tag "col9_filter", options_from_collection_for_select(Account.all, "id", "description"), include_blank: "All",  class:"column_filter" %> </td>
+					            <tr id="filter_col7" data-column="8">
+					                <td>Match type</td>
+					                <td align="center"><%= select_tag "col8_filter", options_for_select([['external_account', "external_account"],['key_word', "key_word"],['item_name', "item_name"],['default', "default"]]), include_blank: "All", class:"column_filter" %> </td>
 					            </tr>
 					            <tr id="filter_col3" data-column="2">
-					                <td>Column - Salary</td>
-					                <td align="center"><%= select_tag "col2_filter", options_from_collection_for_select(Item.where(:id => 34), "id", "name"), include_blank: "All",  class:"column_filter" %> </td>
+					                <td>Account</td>
+					                <td align="center"><%= select_tag "col2_filter", options_from_collection_for_select(Account.all, "id", "description"), include_blank: "All",  class:"column_filter" %> </td>
+					            </tr>
+					            <!-- {"0" => "id", "1" => "period", "2" => "account_id", "3" => "item_id", "4" => "planned_value", "5" => "actual_value", "6" => "hibiscus_sync_id", "7" => "match_confidence", "8" => "match_type", "9" => "match_value", "10" => "text"} -->
+					            <tr id="filter_col4" data-column="3">
+					                <td>Item</td>
+					                <td align="center"><%= select_tag "col3_filter", options_from_collection_for_select(Item.all, "id", "name"), include_blank: "All",  class:"column_filter" %> </td>
 					            </tr> 
 							</tbody>
 						</table>

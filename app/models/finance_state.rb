@@ -94,10 +94,12 @@ class FinanceState < ApplicationRecord
     if item.external_account.present?
       @account_found = find_by_account(item.external_account.split("|"), transaction)
       if @account_found.present?
-        @return["match_type"] = "external_account"
-        @return["match_value"] = @account_found
-        @return["confidence"] = @return["confidence"].to_f + 0.5
-        logger.debug "TRANSACTION FOUND BY EXTERNAL ACCOUNT " + @account_found
+        if item.reserve == false
+          @return["match_type"] = "external_account"
+          @return["match_value"] = @account_found
+          @return["confidence"] = @return["confidence"].to_f + 0.5
+          logger.debug "TRANSACTION FOUND BY EXTERNAL ACCOUNT " + @account_found
+        end
         #return @return
       end
     end
@@ -131,7 +133,7 @@ class FinanceState < ApplicationRecord
       if account.id == item.account_id
         #if transaction.empfaenger_konto == Account.find(item.account_id).iban
         @confidence = @return["confidence"].to_f
-        if @confidence == 0
+        if @confidence == 0 && item.reserve == false
           @return["match_type"] = "default"
           @return["match_value"] = item.account_id        
           logger.debug "TRANSACTION FOUND BY ACCOUNT " + account.description
