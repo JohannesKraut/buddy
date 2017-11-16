@@ -1,6 +1,20 @@
 class MonthlyStatisticsController < ApplicationController
   before_action :set_monthly_statistic, only: [:show, :edit, :update, :destroy]
 
+  def get_pie_data
+    @data = Array.new  
+    if params[:start_date].present? && params[:end_date].present?
+      @chart = MonthlyStatistic.where('period BETWEEN ? AND ?', params[:start_date], params[:end_date]).joins(:item)
+      @expenses_pie = @chart.where('actual_value < 0').group(:name).sum(:actual_value)                    
+      @expenses_pie.find_all do |item|
+        actual_value = item[1].to_f*-1
+        row = [item[0], actual_value]
+        @data.push(row)
+      end
+      render json: @data and return false
+    end
+  end
+
   # GET /monthly_statistics
   # GET /monthly_statistics.json
   def index

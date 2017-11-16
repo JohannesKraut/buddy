@@ -6,9 +6,151 @@
 	  	<%= render 'navigations/navigation_bar' %>
 	  	<p id="notice"><%= notice %></p>
 	</section>
-	<%= render 'monthly_statistics/diagram' %>
+	<% date = MonthlyStatistic.all.order(period: :asc) %>
+	<% minDate = date.first.period %>
+	<% maxDate = date.last.period %>
+	<%= #render 'monthly_statistics/pie_chart_expenses', locals: {image: i} 
+	%>
+	<%= render 'monthly_statistics/bar_chart_expenses' %>
 	<!-- Main content -->
 	<section class="content">
+	  <div class="row">
+        <div class="col-md-12">
+          <div class="box box-default">
+            <div class="box-header with-border">
+              <h3 class="box-title">Browser Usage</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="row">
+                <div class="col-md-12">
+                	<div class="row">
+                  <div class="chart-responsive">
+                    <!-- ><canvas id="pieChart" height="150"></canvas> -->
+                    <% first_of_month = Date.current.beginning_of_month
+                    
+					last_of_next_month = (Date.current + 1.months).end_of_month %>
+                    <!--
+                    MonthlyStatistic.where('period BETWEEN ? AND ?', first_of_month, last_of_next_month).find_each do |transaction| 
+                     @monthlyStatisticsWithNames = Hash.new
+                      @monthlyStatisticsWithNames[""] = 
+                      Invoice.joins(:enrollments).uniq
+                   end -->
+                    <%= @chart = MonthlyStatistic.where('period BETWEEN ? AND ?', first_of_month, last_of_next_month).joins(:item)
+                                        #pie_chart @chart.group(:name).count
+
+                                        @expenses_pie = @chart.where('actual_value < 0').group(:name).sum(:actual_value)
+                                        #@chart.group(:id).having("SUM(actual_value) < 0")
+                                        
+                                        data = Array.new                                
+                                        @expenses_pie.find_all do |item|
+                                        	actual_value = item[1].to_f*-1
+                                       		row = [item[0], actual_value]
+									    	data.push(row)
+                                        end
+
+                                        pie_chart data, adapter: "highcharts", library: { 
+                                        	#chart: { height: '70%'},
+                                        	tooltip: { pointFormat: '<b>-{point.y:.2f}€</b>' },
+                                        	plotOptions: { pie: { 	allowPointSelect: true,
+            														cursor: 'pointer',
+            														dataLabels: {
+                																	enabled: true,
+                																	format: '{point.name}: {point.percentage:.1f} %'
+            														}}}}
+
+                                        %>
+                                       
+                                       <%= 
+                     %>
+                     </div>
+                  </div>
+                  <!-- ./chart-responsive -->
+                </div>
+                <!-- /.col -->
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+            </div>
+            <!-- /.box-body -->
+  			<div class="box-footer">
+              <div class="row">
+                <div class="col-sm-4 col-xs-6">
+                  <div class="description-block border-right">
+                    <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 17%</span>
+                    <h5 class="description-header">$35,210.43</h5>
+                    <span class="description-text">TOTAL REVENUE</span>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 col-xs-6">
+                  <div class="description-block border-right">
+                    <span class="description-percentage text-yellow"><i class="fa fa-caret-left"></i> 0%</span>
+                    <h5 class="description-header">$10,390.90</h5>
+                    <span class="description-text">TOTAL COST</span>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 col-xs-6">
+                  <div class="description-block border-right">
+                    <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 20%</span>
+                    <h5 class="description-header">$24,813.53</h5>
+                    <span class="description-text">TOTAL PROFIT</span>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+            </div>
+            <!-- /.box-footer -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="box">
+					<div class="box-header">
+						<h3 class="box-title">Data Table With Full Features</h3>
+					</div>
+
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div class="col-xs-6">		
+				  			<div class="input-group date">
+				      			<div class="input-group-addon">
+				        			<i class="fa fa-calendar"></i>
+				      			</div>
+				      			<%= text_field_tag :start_date, minDate, :class => "form-control pull-right" %>
+				  			</div>
+			  			</div>
+			  			<div class="col-xs-6">		
+				  			<div class="input-group date">
+				      			<div class="input-group-addon">
+				        			<i class="fa fa-calendar"></i>
+				      			</div>
+				      			<input type="text" class="form-control pull-right" id="end_date" name="end_date" value=<%= maxDate %> >
+				  			</div>
+			  			</div>
+					</div>
+					<!-- /.box-body -->
+				</div>
+				<!-- /.box -->
+			</div>
+			<!-- /.col -->
+		</div>
+		<!-- /.row -->
+		
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
@@ -36,7 +178,7 @@
 					            <tr id="filter_col4" data-column="3">
 					                <td>Item</td>
 					                <td align="center"><%= select_tag "col3_filter", options_from_collection_for_select(Item.all, "id", "name"), include_blank: "All",  class:"column_filter" %> </td>
-					            </tr> 
+					            </tr>
 							</tbody>
 						</table>
 						<table id="example1" class="display" data-source="<%= monthly_statistics_url(format: "json") %>">
@@ -88,5 +230,48 @@
 <script type="text/javascript">
 	var tableId = '#example1'
 	myFunction(tableId)
+	
+	var startDate = '<%= minDate.strftime("%Y-%m-%d").to_s %>';
+	var endDate = '<%= maxDate.strftime("%Y-%m-%d").to_s %>';
+	
+	$('#start_date').datepicker({
+		autoclose: true,
+		language: 'de',
+		format: 'yyyy-mm-dd',
+    	startDate: '<%= minDate %>',
+    	endDate: '<%= maxDate %>'
+	});
+	
+	$('#end_date').datepicker({
+		autoclose: true,
+		language: 'de',
+		format: 'yyyy-mm-dd',
+    	startDate: '<%= minDate %>',
+    	endDate: '<%= maxDate %>'
+	});
+	
+	$('#start_date').change(function() {
+		update_charts();
+	});
+	
+	$('#end_date').change(function() {
+	});
+	
+	function update_charts(){
+		var start_date = $('#start_date').val();
+		var end_date = $('#end_date').val();
+			$.ajax({
+				url: "/get_pie_data",
+				data: {'start_date': start_date, 'end_date': end_date},
+				dataType: "json",
+				type: "GET",
+				success: function(data) {
+					Chartkick.eachChart(
+						function(chart) {chart.updateData(data);}
+					);
+				}
+			})
+	};
+
 </script>
 

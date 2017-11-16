@@ -19,6 +19,7 @@
 //= require adminlte
 //= require dataTables/jquery.dataTables
 //= require Chart.bundle
+//= require highcharts
 //= require chartkick
 //= require best_in_place
 //= require_tree .

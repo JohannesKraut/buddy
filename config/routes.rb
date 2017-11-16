@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   root 'dashboard#dashboard'
   
   get '/calculate_amount', to: 'items#calculate_amount'
-
+  get '/get_pie_data', to: 'monthly_statistics#get_pie_data'
   #get '/delete_all', to: 'monthly_statistics#delete_all'
   
   resources :items do
