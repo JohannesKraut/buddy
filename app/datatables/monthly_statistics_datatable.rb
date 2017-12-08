@@ -24,8 +24,16 @@ private
 
   def data
     data = Array.new
+    if params[:sSearch_1].present?
+      date_range = params[:sSearch_1].split(";")
+      statistics = monthly_statistics.where('period BETWEEN ? AND ?', date_range[0], date_range[1])
+    else
+      statistics = monthly_statistics.all
+    end
+   
     #"0" => "id", "1" => "period", "2" => "item_id", "3" => "planned_value", "4" => "actual_value"
-    monthly_statistics.all.order(:period).each_with_index do |monthly_statistic, index|
+    statistics.order(:period).each_with_index do |monthly_statistic, index|
+    #monthly_statistics.all.order(:period).each_with_index do |monthly_statistic, index|
       @transaction = find_transaction(monthly_statistic.hibiscus_sync_id)
         #Account.find(monthly_statistic.account_id).description,
         #find_item(monthly_statistic.item_id),
@@ -115,7 +123,8 @@ private
         if param.start_with?("sSearch_")
           column_no = param[-1]           #sSearch_0 -> 0
           if params["bSearchable_"+column_no] == "true" and MonthlyStatistic.column_names.include? get_columns[column_no]
-            if params[param].length > 0
+            puts "Current param " + param
+            if params[param].length > 0 and param != 'sSearch_1'
               where_clause = get_columns[column_no].to_s + " like :search"
               monthly_statistics = monthly_statistics.where(where_clause, search: "#{params[param]}")   
             end

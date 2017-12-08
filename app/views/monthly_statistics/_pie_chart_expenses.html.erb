@@ -1,30 +1,17 @@
-      <div class="row">
-        <div class="col-md-12">
-          <div class="box box-default">
-            <div class="box-header with-border">
-              <h3 class="box-title">Browser Usage</h3>
-              <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
-                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-              </div>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
               <div class="row">
                 <div class="col-md-12">
                   <div class="chart-responsive">
                     <!-- ><canvas id="pieChart" height="150"></canvas> -->
                     <% first_of_month = Date.current.beginning_of_month
-                    #
-					last_of_next_month = (Date.current + 1.months).end_of_month %>
+					last_of_next_month = Date.current.end_of_month %>
                     <!--
                     MonthlyStatistic.where('period BETWEEN ? AND ?', first_of_month, last_of_next_month).find_each do |transaction| 
                      @monthlyStatisticsWithNames = Hash.new
                       @monthlyStatisticsWithNames[""] = 
                       Invoice.joins(:enrollments).uniq
                    end -->
-                    <%= @chart = MonthlyStatistic.where('period BETWEEN ? AND ?', first_of_month, last_of_next_month).joins(:item)
+                    <%= # = MonthlyStatistic.where('period BETWEEN ? AND ?', first_of_month, last_of_next_month).joins(:item)
+                    @chart = MonthlyStatistic.all.joins(:item)
                                         #pie_chart @chart.group(:name).count
 
                                         @expenses_pie = @chart.where('actual_value < 0').group(:name).sum(:actual_value)
@@ -38,7 +25,7 @@
                                         end
 
                                         pie_chart data, adapter: "highcharts", library: { 
-                                        	chart: { height: '70%'},
+                                        	#chart: { height: '70%'},
                                         	tooltip: { pointFormat: '<b>-{point.y:.2f}€</b>' },
                                         	plotOptions: { pie: { 	allowPointSelect: true,
             														cursor: 'pointer',
@@ -58,47 +45,7 @@
                 <!-- /.col -->
               </div>
               <!-- /.row -->
-            </div>
-            <!-- /.box-body -->
-  			<div class="box-footer">
-              <div class="row">
-                <div class="col-sm-4 col-xs-6">
-                  <div class="description-block border-right">
-                    <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 17%</span>
-                    <h5 class="description-header">$35,210.43</h5>
-                    <span class="description-text">TOTAL REVENUE</span>
-                  </div>
-                  <!-- /.description-block -->
-                </div>
-                <!-- /.col -->
-                <div class="col-sm-4 col-xs-6">
-                  <div class="description-block border-right">
-                    <span class="description-percentage text-yellow"><i class="fa fa-caret-left"></i> 0%</span>
-                    <h5 class="description-header">$10,390.90</h5>
-                    <span class="description-text">TOTAL COST</span>
-                  </div>
-                  <!-- /.description-block -->
-                </div>
-                <!-- /.col -->
-                <div class="col-sm-4 col-xs-6">
-                  <div class="description-block border-right">
-                    <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 20%</span>
-                    <h5 class="description-header">$24,813.53</h5>
-                    <span class="description-text">TOTAL PROFIT</span>
-                  </div>
-                  <!-- /.description-block -->
-                </div>
-                <!-- /.col -->
-              </div>
-              <!-- /.row -->
-            </div>
-            <!-- /.box-footer -->
-          </div>
-          <!-- /.box -->
-        </div>
-        <!-- /.col -->
-      </div>
-      <!-- /.row -->
+ 
       
 <script type="text/javascript">
 	

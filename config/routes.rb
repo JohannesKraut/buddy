@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   get '/calculate_amount', to: 'items#calculate_amount'
   get '/get_pie_data', to: 'monthly_statistics#get_pie_data'
   #get '/delete_all', to: 'monthly_statistics#delete_all'
-  
+  get '/get_item', to: 'items#get_item'
   resources :items do
     collection { post :import }  
   end

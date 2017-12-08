@@ -7,8 +7,8 @@
 	  	<p id="notice"><%= notice %></p>
 	</section>
 	<% date = MonthlyStatistic.all.order(period: :asc) %>
-	<% minDate = Date.current.beginning_of_month #date.first.period %>
-	<% maxDate = Date.current.end_of_month #date.last.period %>
+	<% minDate = date.first.period %>
+	<% maxDate = date.last.period %>
 	<!-- Main content -->
 	<section class="content">
 	  <div class="row">
@@ -99,9 +99,7 @@
 				      			<div class="input-group-addon">
 				        			<i class="fa fa-calendar"></i>
 				      			</div>
-				      			<%= #text_field_tag :start_date, minDate, :id="filter_col1", :class => "form-control pull-right" 
-				      			%>
-				      			<input type="text" class="form-control pull-right" id="start_date" name="end_date" value=<%= minDate %> >
+				      			<%= text_field_tag :start_date, minDate, :class => "form-control pull-right" %>
 				  			</div>
 			  			</div>
 			  			<div class="col-xs-6">		
@@ -136,10 +134,6 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr id="filter_col1" data-column="2">
-					                <td>Match type</td>
-					                <td align="center"><input type="text" class="form-control pull-right" id="col1_filter" name="start_date" value=<%= minDate %> > </td>
-					            </tr>
 					            <tr id="filter_col7" data-column="8">
 					                <td>Match type</td>
 					                <td align="center"><%= select_tag "col8_filter", options_for_select([['external_account', "external_account"],['key_word', "key_word"],['item_name', "item_name"],['default', "default"]]), include_blank: "All", class:"column_filter" %> </td>
@@ -206,121 +200,188 @@
 <script type="text/javascript">
 	var tableId = '#example1'
 	myFunction(tableId)
-
+	
 	var startDate = '<%= minDate.strftime("%Y-%m-%d").to_s %>';
 	var endDate = '<%= maxDate.strftime("%Y-%m-%d").to_s %>';
-		
-	var table = $(tableId).DataTable();
-	var dateRange = startDate + ';' + endDate;
-	console.log(dateRange);
-	table.column(1).search(dateRange).draw();
 	
 	$('#start_date').datepicker({
 		autoclose: true,
 		language: 'de',
 		format: 'yyyy-mm-dd',
-    	startDate: '<%= date.first.period %>',
-    	endDate: '<%= date.last.period  %>'
+    	startDate: '<%= minDate %>',
+    	endDate: '<%= maxDate %>'
 	});
 	
 	$('#end_date').datepicker({
 		autoclose: true,
 		language: 'de',
 		format: 'yyyy-mm-dd',
-    	startDate: '<%= date.first.period %>',
-    	endDate: '<%= date.last.period %>'
+    	startDate: '<%= minDate %>',
+    	endDate: '<%= maxDate %>'
 	});
-	/*
-	$('#start_date').keyup( function() { 
-		var table = $(tableId).DataTable();
-		table.draw();
-		 } );
-
-
-	$('#end_date').keyup( function() { 
-		var table = $(tableId).DataTable();
-		table.draw();
-		 } );	*/
 	
 	$('#start_date').change(function() {
-		var table = $(tableId).DataTable();
-		var dateRange = $(this).val() + ';' + $('#end_date').val();
-		table.column(1).search(dateRange).draw();
-		
-		//$(tableId).DataTable().column( i ).search(
-        //$('#col'+i+'_filter').val()
-//).draw();
-		//var oTable = $(tableId).DataTable();
-		//minDateFilter = new Date(this.value).getTime();
-    	//oTable.fnDraw();
-		//table.column().search().draw($('#start_date').val());
 		update_charts();
 	});
 	
 	$('#end_date').change(function() {
-		var table = $(tableId).DataTable();
-		var dateRange = $('#start_date').val() + ';' + $(this).val();
-		table.column(1).search(dateRange).draw();
-		update_charts();
 	});
 	
-		
 	function update_charts(){
 		var start_date = $('#start_date').val();
 		var end_date = $('#end_date').val();
-		var table = $(tableId).DataTable();
-		var data = table
-		    .rows()
-		    .data();
-		var result = [];
-		
-		data.reduce(function (res, value) {
-			if (value[5] < 0) {
-				var id = value[3];
-				var expenses = 0;
-				var actual_value = function () {
-					var expense = value[5];
-					if (expense < 0) {
-						expense = expense*-1;
-					}
-					return parseFloat(expense);
-				}();
+			$.ajax({
+				url: "/monthly_statistics",
+
+				dataType: "json",
+				type: "GET",
+				success: function(data) {
+					
+					/*var sEcho = data["sEcho"];
+					var iTotalRecords = data["iTotalRecords"];
+					var iTotalDisplayRecords = data["iTotalDisplayRecords"];
+					var aaData = ["aaData"];
+					aaData.sort(function(a, b){return a.item_id - b.item_id});*/
+					//var chart = Chartkick.charts["chart-id"]
+					
+					Chartkick.eachChart(
+
+						function(chart) {
+							//chart.updateData(result)
+							console.log(chart.getData());
+							;}
+					);
+					
+					var table = $(tableId).DataTable();
+					var data = table
+					    .rows()
+					    .data();
+					
+					//console.loge(<%= datatable %>)
+					//console.log(data);
+					
+					var result = [];
+					data.reduce(function (res, value) {
+						var id = value[3];
+						var item_name ="test";
+						function
+						var item = function () {
+							var result = null;
+							$.ajax({
+										url: "/get_item",
+										data: {'id': id},
+										dataType: "html",
+										type: "GET",
+										success: function(data) {
+											result = data.name;
+											//return hash(data);
+											console.log(result);
+											//data.toString();
+											//item_name= data.name.toString();
+											// = data.name;
+										}
+							});
+							return result;
+							}();
 							
-				if (!res[id]) {	
-					res[id] = [id, expenses];
-					result.push(res[id])
-				}
-				res[id][1] += actual_value
-			}
-			return res;
-		}, {});
-			
-		var arrayLength = result.length;
-		for (var i = 0; i < arrayLength; i++) {
-			var id = result[i][0];
-			var item = function () {
-				var tmp = null;
-				$.ajax({
-						url: "/get_item",
-						data: {'id': id},
-						dataType: "json",
-						type: "GET",
-						async: false,
-						success: function(data) {
-							tmp = data;
+						console.log(item);
+						var actual_value = parseFloat(value[5]);
+						var expenses = 0;
+						
+					    if (!res[id]) {				    	
+					    	
+					        res[id] = [id, expenses];
+					            //item: item_id,
+					            //expenses: 0
+					            
+					        //};
+					        result.push(res[id])
+					    }
+					    res[id][1] += actual_value
+					    return res;
+					}, {});
+					console.log(result);
+					//console.log(<%={"Football" => 10, "Basketball" => 5}%>)
+						/*			
+					var data = function(aaData) {
+						var arrayLength = aaData.length;
+						var current_item = "";
+						var amount = 0;
+						for (var i = 0; i < arrayLength; i++) {
+							current_item = aaData[i][3];
+							amount = aaData[i][5];
+							if (expense < 0) { 
+								if (aaData[i][3] = aaData[i-1][3]) {
+									expenses += expense
+															
+								}
+								else {
+								}
+								
+							}						
+							
+							var row;
+							var item = function(aaData, item) {
+								var arrayLength = aaData.length;
+								var data;
+								var expenses = 0;
+								
+								for (var i = 0; i < arrayLength; i++) {
+									
+									
+
+								}
+								return data[item, expenses]
+							}
+						return row = []
+					}
+					
+					
+					var current_item = "";
+					var data;
+					var expenses = 0;
+					
+
+					
+					for (var i = 0; i < arrayLength; i++) {
+						
+						row = []
+						
+						
+						
+						if (current_item <> aaData[i][3]) {
+							
+							data.push();
+							if (expense < 0) { 
+								expenses += expense
+							
+							}							
 						}
-					});
-				return tmp;
-			}();
-			result[i][0] = item.name
-		    //alert(myStringArray[i]);
-		    //Do something
-		}
-		console.log(result)
-		Chartkick.eachChart(
-			function(chart) {chart.updateData(result);}
-		);
-	}
-	
+						current_item = aaData[i][3];
+						
+					}
+					data.push(row)*/
+					//aaData["actual_value"]
+					
+
+				}
+			})
+	};
+		/*function update_charts(){
+		var start_date = $('#start_date').val();
+		var end_date = $('#end_date').val();
+			$.ajax({
+				url: "/get_pie_data",
+				data: {'start_date': start_date, 'end_date': end_date},
+				dataType: "json",
+				type: "GET",
+				success: function(data) {
+					Chartkick.eachChart(
+						function(chart) {chart.updateData(data);}
+					);
+				}
+			})
+	};*/
+
 </script>
 

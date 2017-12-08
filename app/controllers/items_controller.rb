@@ -3,6 +3,15 @@ class ItemsController < ApplicationController
   respond_to :html, :json
   add_flash_types :success, :warning, :danger, :info
 
+  def get_item
+    if params[:id].present?
+      @item = Item.find(params[:id])
+      @data = Hash.new
+      @data["name"] = @item.name
+      render json: Item.find(params[:id]).to_json
+    end
+  end
+  
   def calculate_amount
     if params[:interval].present? && params[:item].present? && params[:amount].present?
       @item = Item.find(params[:item])

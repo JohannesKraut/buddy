@@ -10,6 +10,7 @@ $(document).ready(function() {
 	*/
 });
 
+
 function myFunction(tableId) {
 	var data = $(tableId).data('source');
 	 var table = $(tableId).DataTable({

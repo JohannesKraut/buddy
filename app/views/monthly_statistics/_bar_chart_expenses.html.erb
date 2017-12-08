@@ -16,7 +16,7 @@
                   <div class="chart-responsive">
                     <!-- ><canvas id="pieChart" height="150"></canvas> -->
                     <% first_of_month = Date.current.beginning_of_month
-					last_of_next_month = (Date.current + 1.months).end_of_month %>
+					last_of_next_month = Date.current.end_of_month %>
                     <!--
                     MonthlyStatistic.where('period BETWEEN ? AND ?', first_of_month, last_of_next_month).find_each do |transaction| 
                      @monthlyStatisticsWithNames = Hash.new
