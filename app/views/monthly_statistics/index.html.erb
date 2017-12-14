@@ -6,7 +6,12 @@
 	  	<%= render 'navigations/navigation_bar' %>
 	  	<p id="notice"><%= notice %></p>
 	</section>
-	<% date = MonthlyStatistic.all.order(period: :asc) %>
+	<% date = MonthlyStatistic.all.order(period: :asc) 
+	if date.present?
+		startDate = date.first.period
+		endDate = date.last.period
+	end
+	%>
 	<% minDate = Date.current.beginning_of_month #date.first.period %>
 	<% maxDate = Date.current.end_of_month #date.last.period %>
 	<!-- Main content -->
@@ -101,7 +106,7 @@
 				      			</div>
 				      			<%= #text_field_tag :start_date, minDate, :id="filter_col1", :class => "form-control pull-right" 
 				      			%>
-				      			<input type="text" class="form-control pull-right" id="start_date" name="end_date" value=<%= minDate %> >
+				      			<input type="text" class="form-control pull-right" id="start_date" name="start_date" value=<%= minDate %> >
 				  			</div>
 			  			</div>
 			  			<div class="col-xs-6">		
@@ -109,7 +114,7 @@
 				      			<div class="input-group-addon">
 				        			<i class="fa fa-calendar"></i>
 				      			</div>
-				      			<input type="text" class="form-control pull-right" id="end_date" name="end_date" value=<%= maxDate %> >
+				      			<input type="text" class="form-control pull-right" id="end_date" name="end_date" value=<%= endDate %> >
 				  			</div>
 			  			</div>
 					</div>
@@ -136,10 +141,11 @@
 								</tr>
 							</thead>
 							<tbody>
+								<!-- 
 								<tr id="filter_col1" data-column="2">
 					                <td>Match type</td>
 					                <td align="center"><input type="text" class="form-control pull-right" id="col1_filter" name="start_date" value=<%= minDate %> > </td>
-					            </tr>
+					            </tr> -->
 					            <tr id="filter_col7" data-column="8">
 					                <td>Match type</td>
 					                <td align="center"><%= select_tag "col8_filter", options_for_select([['external_account', "external_account"],['key_word', "key_word"],['item_name', "item_name"],['default', "default"]]), include_blank: "All", class:"column_filter" %> </td>
@@ -219,16 +225,16 @@
 		autoclose: true,
 		language: 'de',
 		format: 'yyyy-mm-dd',
-    	startDate: '<%= date.first.period %>',
-    	endDate: '<%= date.last.period  %>'
+    	startDate: '<%= startDate %>',
+    	endDate: '<%= endDate %>'
 	});
 	
 	$('#end_date').datepicker({
 		autoclose: true,
 		language: 'de',
 		format: 'yyyy-mm-dd',
-    	startDate: '<%= date.first.period %>',
-    	endDate: '<%= date.last.period %>'
+    	startDate: '<%= startDate %>',
+    	endDate: '<%= endDate %>'
 	});
 	/*
 	$('#start_date').keyup( function() { 

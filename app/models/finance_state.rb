@@ -66,10 +66,18 @@ class FinanceState < ApplicationRecord
           
         end   #end hibsicus_transaction
         
-        
-        if @last_synchronized.present?  
-          logger.debug "CREATE FINANCE STATE"      
-          FinanceState.create(:period => @last_synchronized, :hibiscus_sync_id => @hibiscus_id, :balance => @balance, :account_id => account.id)
+        if @last_synchronized.present?
+          @current_finance_state= FinanceState.where(:account_id => account.id).order(period: :asc).last
+          if @current_finance_state.present?
+            logger.debug "USE EXISTING FINANCE STATE: " + @current_finance_state.id.to_s
+            @current_finance_state.update(:period => @last_synchronized, :hibiscus_sync_id => @hibiscus_id, :balance => @balance)
+            #@current_finance_state.period = @last_synchronized
+            #@current_finance_state.hibiscus_sync_id = @hibiscus_id
+            #@current_finance_state.balance = @balance
+          else
+            logger.debug "CREATE FINANCE STATE"      
+            FinanceState.create(:period => @last_synchronized, :hibiscus_sync_id => @hibiscus_id, :balance => @balance, :account_id => account.id)
+          end
           @last_synchronized = nil
           @balance = nil
           @hibiscus_id = nil
