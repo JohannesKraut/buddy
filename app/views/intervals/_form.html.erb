@@ -10,29 +10,45 @@
       </ul>
     </div>
   <% end %>
-
+  <!-- general form elements -->
+  <div class="box box-primary">
+    <div class="box-header with-border">
+      <h3 class="box-title">Edit data</h3>
+    </div>
+    <!-- /.box-header -->
+    <!-- form start -->
+    <form role="form">
+      <div class="box-body">
+	  <div class="form-group">
+		 <div class="field">
+	    	<%= form.label :name %>
+	    	<%= form.text_field :name, id: :interval_name, class: "form-control", placeholder: "Test" %>
+		 </div>
+	  </div>
+	  <div class="form-group">
+		 <div class="field">
+	    	<%= form.label :numerator %>
+	    	<%= form.text_field :numerator, id: :interval_numerator, class: "form-control", placeholder: "Test" %>
+		 </div>
+	  </div>	  
+	  <div class="form-group">
+		 <div class="field">
+	    	<%= form.label :denominator %>
+	    	<%= form.text_field :denominator, id: :interval_denominator, class: "form-control", placeholder: "Test" %>
+		 </div>
+	  </div>	  
+	  <div class="form-group">
+		 <div class="field">
+	    	<%= form.label :description %>
+	    	<%= form.text_field :description, id: :interval_description, class: "form-control", placeholder: "Test" %>
+		 </div>
+	  </div>	
+    </div>
+  	<!-- /.box-body -->
+    <div class="box-footer">
+    	<button type="submit" class="btn btn-primary">Submit</button>
+  	</div>
+	</form>
+  </div>
+  <!-- /.box -->
 <% end %>
-
-<table id="example2" class="table table-bordered table-hover">     
-	<thead>
-    	<tr>
-			<th>#</th>
-			<th>Name</th>
-			<th>Numerator</th>
-			<th>Denominator</th>
-			<th>Description</th>
-        </tr>
-	</thead>
-	<tbody>
-	    <tr>
-	      <td><%= @interval.id %></td>
-	      <td><%= best_in_place @interval, :name, :as => :input %></td>
-		  <td><%= best_in_place @interval, :numerator, :as => :input %></td>
-		  <td><%= best_in_place @interval, :denominator, :as => :input %></td>
-		  <td><%= best_in_place @interval, :description, :as => :input %></td>
-	    </tr>
-    </tbody>
-    <tfoot>
-   	</tfoot>
-</table>
-

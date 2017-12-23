@@ -1,3 +1,10 @@
+    <% date = MonthlyStatistic.all.order(period: :asc)
+    @last_income = date.where("item_id = ? AND match_value LIKE?", 1,"%1-003870-000001-00%").last
+	if date.present?
+		startDate = date.first.period
+		endDate = date.last.period
+	end
+	%>
  <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -8,6 +15,8 @@
       </h1>
       <%= render 'navigations/navigation_bar' %>
     </section>
+	<% minDate = @last_income.period #Date.current.beginning_of_month #date.first.period %>
+	<% maxDate = Date.current.end_of_month #date.last.period %>
 	<!-- Main content -->
 	<section class="content">
       <div class="row">
@@ -23,10 +32,32 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
+        		<div class="row">
+					<div class="col-xs-6">		
+			  			<div class="input-group date">
+			      			<div class="input-group-addon">
+			        			<i class="fa fa-calendar"></i>
+			      			</div>
+			      			<%= #text_field_tag :start_date, minDate, :id="filter_col1", :class => "form-control pull-right" 
+			      			%>
+			      			<input type="text" class="form-control pull-right" id="start_date" name="start_date" value=<%= minDate %> >
+			  			</div>
+		  			</div>
+		  			<div class="col-xs-6">		
+			  			<div class="input-group date">
+			      			<div class="input-group-addon">
+			        			<i class="fa fa-calendar"></i>
+			      			</div>
+			      			<input type="text" class="form-control pull-right" id="end_date" name="end_date" value=<%= endDate %> >
+			  			</div>
+		  			</div>
+				</div>
+              </div>
+              <!-- /.row -->
               <div class="row">
                 <div class="col-md-12">
                   <div class="chart-responsive">
-					<%= render 'monthly_statistics/bar_chart_expenses' %>
+					<%= render 'monthly_statistics/bar_chart_expenses', locals: {last_income: @last_income} %>
                   </div>
                   <!-- ./chart-responsive -->
                 </div>
@@ -35,40 +66,45 @@
               <!-- /.row -->
             </div>
             <!-- /.box-body -->
-            <div class="box-footer">
+  			<div class="box-footer">
               <div class="row">
+              	<% transactions = MonthlyStatistic.where('period BETWEEN ? AND ?', minDate, maxDate).joins(:item) %>
+              	<% actual_expenses = transactions.where('actual_value < 0').sum(:actual_value) %>
+              	<% planned_expenses = Item.where('amount_calculated < 0').sum(:amount_calculated) %> 
                 <div class="col-sm-4 col-xs-6">
                   <div class="description-block border-right">
                     <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 17%</span>
-                    <h5 class="description-header">$35,210.43</h5>
-                    <span class="description-text">TOTAL REVENUE</span>
+                    <h5 class="description-header" id="actual_expenses"><%= actual_expenses %></h5>
+                    <h5 class="description-header" id="planned_expenses"><%= planned_expenses %></h5>
+                    <span class="description-text">TOTAL EXPENSES</span>
                   </div>
                   <!-- /.description-block -->
                 </div>
                 <!-- /.col -->
+                <% actual_income = transactions.where('actual_value > 0 and reserve = false').sum(:actual_value) %>
+                <% planned_income = Item.where('amount_calculated > 0').sum(:amount_calculated) %> 
                 <div class="col-sm-4 col-xs-6">
                   <div class="description-block border-right">
                     <span class="description-percentage text-yellow"><i class="fa fa-caret-left"></i> 0%</span>
-                    <h5 class="description-header">$10,390.90</h5>
-                    <span class="description-text">TOTAL COST</span>
+                    <h5 class="description-header" id="actual_income"><%= actual_income %></h5>
+                    <h5 class="description-header" id="planned_income"><%= planned_income %></h5>
+                    <span class="description-text">TOTAL INCOME</span>
                   </div>
                   <!-- /.description-block -->
                 </div>
                 <!-- /.col -->
+                <% result = actual_income + actual_expenses %> 
                 <div class="col-sm-4 col-xs-6">
                   <div class="description-block border-right">
-                    <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 20%</span>
-                    <h5 class="description-header">$24,813.53</h5>
-                    <span class="description-text">TOTAL PROFIT</span>
+                    <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 20%</span>         
+                    <h5 class="description-header"><%= result %></h5>
+                    <span class="description-text">TOTAL BALANCE</span>
                   </div>
                   <!-- /.description-block -->
                 </div>
                 <!-- /.col -->
               </div>
               <!-- /.row -->
-                <%= link_to 'My finance report', controller: 'items' %>
-				<%= link_to 'My categories', controller: 'categories' %>
-				<%= link_to 'Intervals', controller: 'intervals' %>
             </div>
             <!-- /.box-footer -->
           </div>

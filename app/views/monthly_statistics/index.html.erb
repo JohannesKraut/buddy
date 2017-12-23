@@ -12,7 +12,7 @@
 		endDate = date.last.period
 	end
 	%>
-	<% minDate = Date.current.beginning_of_month #date.first.period %>
+	<% minDate = date.where(:item => 1).last.period #Date.current.beginning_of_month #date.first.period %>
 	<% maxDate = Date.current.end_of_month #date.last.period %>
 	<!-- Main content -->
 	<section class="content">
@@ -53,29 +53,37 @@
             <!-- /.box-body -->
   			<div class="box-footer">
               <div class="row">
+              	<% transactions = MonthlyStatistic.where('period BETWEEN ? AND ?', minDate, maxDate).joins(:item) %>
+              	<% actual_expenses = transactions.where('actual_value < 0 and reserve = false').sum(:actual_value) %>
+              	<% planned_expenses = transactions.where('planned_value < 0 and reserve = false').sum(:planned_value) %> 
                 <div class="col-sm-4 col-xs-6">
                   <div class="description-block border-right">
                     <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 17%</span>
-                    <h5 class="description-header">$35,210.43</h5>
-                    <span class="description-text">TOTAL REVENUE</span>
+                    <h5 class="description-header" id="actual_expenses"><%= actual_expenses %></h5>
+                    <h5 class="description-header" id="planned_expenses"><%= planned_expenses %></h5>
+                    <span class="description-text">TOTAL EXPENSES</span>
                   </div>
                   <!-- /.description-block -->
                 </div>
                 <!-- /.col -->
+                <% actual_income = transactions.where('actual_value > 0 and reserve = false').sum(:actual_value) %>
+                <% planned_income = transactions.where('planned_value > 0 and reserve = false').sum(:planned_value) %> 
                 <div class="col-sm-4 col-xs-6">
                   <div class="description-block border-right">
                     <span class="description-percentage text-yellow"><i class="fa fa-caret-left"></i> 0%</span>
-                    <h5 class="description-header">$10,390.90</h5>
-                    <span class="description-text">TOTAL COST</span>
+                    <h5 class="description-header" id="actual_income"><%= actual_income %></h5>
+                    <h5 class="description-header" id="planned_income"><%= planned_income %></h5>
+                    <span class="description-text">TOTAL INCOME</span>
                   </div>
                   <!-- /.description-block -->
                 </div>
                 <!-- /.col -->
+                <% result = actual_income + actual_expenses %> 
                 <div class="col-sm-4 col-xs-6">
                   <div class="description-block border-right">
-                    <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 20%</span>
-                    <h5 class="description-header">$24,813.53</h5>
-                    <span class="description-text">TOTAL PROFIT</span>
+                    <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 20%</span>         
+                    <h5 class="description-header"><%= result %></h5>
+                    <span class="description-text">TOTAL BALANCE</span>
                   </div>
                   <!-- /.description-block -->
                 </div>

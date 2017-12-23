@@ -26,7 +26,7 @@ private
       if index == 0 then
         @rollup = item.amount_calculated
       else
-        @rollup -= item.amount_calculated
+        @rollup += item.amount_calculated
       end
       #item.amount_calculated = Interval.find(item.interval_id).factor*item.amount
       row = [
