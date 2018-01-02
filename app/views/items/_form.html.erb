@@ -1,42 +1,3 @@
-<!-- ><table id="example2" class="table table-bordered table-hover">     
-	<thead>
-    	<tr>
-									<th>Order</th>
-									<th>Name</th>
-									<th>Total amount</th>
-									<th>Amount calculated</th>
-									<th>Reserve</th>
-									<th>Maturity</th>
-									<th>Active</th>
-									<th>Category</th>
-									<th>Interval</th>
-									<th>Key words</th>
-									<th>Destroy</th>
-        </tr>
-	</thead>
-	<tbody>
-	    <tr>
-	      <td><%= best_in_place @item, :order_id, :as => :input, :type => :textarea %></td>
-		  <td><%= best_in_place @item, :name, :as => :input, :type => :textarea %></td>
-		  <td><%= best_in_place @item, :total_amount, :as => :input, :type => :textarea, :data => {:message => @item.amount_calculated} %></td>
-		  <!-- ><td><%= best_in_place @item, :amount_calculated,:display_as => :calculate_planned_value, :as => :input, :type => :textarea %></td> -->
-		  <!-- ><td><%= best_in_place @item, :amount_calculated, :as => :input, :type => :textarea %></td>
-		  <td><%= best_in_place @item, :reserve, :as => :checkbox, collection: {false: "No", true: "Yes"}  %></td>
-		  <td><%= best_in_place @item, :maturity, :type => :date %></td>
-		  		  <td><%= best_in_place @item, :active, as: :checkbox, collection: {false: "No", true: "Yes"}  %></td>
-		  <td><%= #@item.category.name
-		  #@item collection_select :category_id, Category.all, :id, :name 
-		  	best_in_place @item, :category_id, :as => :select, :collection => Category.all.map { |i| [i.id, i.name] } %></td>
-		  <td><%= best_in_place @item, :interval_id, :as => :select, :collection => Interval.all.map { |i| [i.id, i.description] } %></td>
-		  <td><%= best_in_place @item, :key_words, :as => :input, :type => :textarea %></td>
-	      <td><%= #link_to 'Destroy', item_path(@item), method: :delete, data: { confirm: 'Are you sure?' } 
-	      %></td>
-	    </tr>
-    </tbody>
-    <tfoot>
-   	</tfoot>
-</table> -->
-
 <%= form_with(model: @item, local: true) do |form| %>
   <% if @item.errors.any? %>
     <div id="error_explanation">
@@ -118,13 +79,27 @@
 	    </div>
 	    <!-- /.input group -->
 	  </div>
-	    <div class="form-group">
+		<div class="form-group">
+	    	<%= content_tag(:div, :class => "checkbox") do %>
+				<%= content_tag(:label) do %>
+		    		<%= form.check_box(:budget, id: :item_budget, class: "checkbox") + :budget %>
+		    	<% end %>
+			<% end %>
+		</div>
+		<div class="form-group">
 	    	<%= content_tag(:div, :class => "checkbox") do %>
 				<%= content_tag(:label) do %>
 		    		<%= form.check_box(:reserve, id: :item_reserve, class: "checkbox") + :reserve %>
 		    	<% end %>
 			<% end %>
-		  </div>	
+		</div>	
+		<div class="form-group">
+	    	<%= content_tag(:div, :class => "checkbox") do %>
+				<%= content_tag(:label) do %>
+		    		<%= form.check_box(:savings, id: :item_savings, class: "checkbox") + :savings %>
+		    	<% end %>
+			<% end %>
+		</div>	
 	    <div class="form-group">
 	    	<%= content_tag(:div, :class => "checkbox") do %>
 				<%= content_tag(:label) do %>

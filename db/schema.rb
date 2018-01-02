@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171008194518) do
+ActiveRecord::Schema.define(version: 20171224113807) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "account_number"
@@ -73,6 +73,8 @@ ActiveRecord::Schema.define(version: 20171008194518) do
     t.string "key_words"
     t.bigint "account_id"
     t.string "external_account"
+    t.boolean "budget"
+    t.boolean "savings"
     t.index ["account_id"], name: "index_items_on_account_id"
     t.index ["category_id"], name: "index_items_on_category_id"
     t.index ["interval_id"], name: "index_items_on_interval_id"

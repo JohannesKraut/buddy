@@ -1,10 +1,9 @@
-    <% date = MonthlyStatistic.all.order(period: :asc)
-    @last_income = date.where("item_id = ? AND match_value LIKE?", 1,"%1-003870-000001-00%").last
-	if date.present?
-		startDate = date.first.period
-		endDate = date.last.period
-	end
-	%>
+    <% 
+    @month_dates = MonthlyStatistic.get_salaries
+    @minDate = MonthlyStatistic.get_date_of_first_income
+    @maxDate = MonthlyStatistic.get_date_of_last_income
+    %>
+	<% @transactions = MonthlyStatistic.where('period BETWEEN ? AND ?', @minDate, @maxDate).joins(:item)  %>
  <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -15,8 +14,6 @@
       </h1>
       <%= render 'navigations/navigation_bar' %>
     </section>
-	<% minDate = @last_income.period #Date.current.beginning_of_month #date.first.period %>
-	<% maxDate = Date.current.end_of_month #date.last.period %>
 	<!-- Main content -->
 	<section class="content">
       <div class="row">
@@ -32,15 +29,26 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
+	              <!-- /.row -->
+	              <div class="row">
+	                <div class="col-md-12">
+	                	<% @salary_select = Array.new %>
+	                	<% 
+	                	@month_dates.each do |key, value|
+	                		@salary_select.push([value["month"].to_s, value["id"].to_s]) #month
+	                		end %>
+	                	<%= select_tag "month_select", options_for_select(@salary_select, @salary_select.last), {class: "form-control select2"} %>
+	                </div>
+	                <!-- /.col -->
+	              </div>
+	              <!-- /.row -->
         		<div class="row">
 					<div class="col-xs-6">		
 			  			<div class="input-group date">
 			      			<div class="input-group-addon">
 			        			<i class="fa fa-calendar"></i>
 			      			</div>
-			      			<%= #text_field_tag :start_date, minDate, :id="filter_col1", :class => "form-control pull-right" 
-			      			%>
-			      			<input type="text" class="form-control pull-right" id="start_date" name="start_date" value=<%= minDate %> >
+			      			<input type="text" class="form-control pull-right" id="start_date" name="start_date" value=<%= @minDate %> >
 			  			</div>
 		  			</div>
 		  			<div class="col-xs-6">		
@@ -48,7 +56,7 @@
 			      			<div class="input-group-addon">
 			        			<i class="fa fa-calendar"></i>
 			      			</div>
-			      			<input type="text" class="form-control pull-right" id="end_date" name="end_date" value=<%= endDate %> >
+			      			<input type="text" class="form-control pull-right" id="end_date" name="end_date" value=<%= @maxDate %> >
 			  			</div>
 		  			</div>
 				</div>
@@ -57,7 +65,12 @@
               <div class="row">
                 <div class="col-md-12">
                   <div class="chart-responsive">
-					<%= render 'monthly_statistics/bar_chart_expenses', locals: {last_income: @last_income} %>
+                  	<% @data = @transactions.where('actual_value < 0').group(:name).order('sum_actual_value ASC').sum(:actual_value)
+                  	#@header = 'Expenses ' + @maxDate.beginning_of_month.next_month.strftime("%B %Y").to_s 
+                  	%>
+                  	<% #+ ' (' + @minDate.to_s + ' - ' + @maxDate.to_s + ')' 
+                  	%>
+					<%= render 'monthly_statistics/bar_chart_expenses', locals: {header: @header, data: @data} %>
                   </div>
                   <!-- ./chart-responsive -->
                 </div>
@@ -68,8 +81,8 @@
             <!-- /.box-body -->
   			<div class="box-footer">
               <div class="row">
-              	<% transactions = MonthlyStatistic.where('period BETWEEN ? AND ?', minDate, maxDate).joins(:item) %>
-              	<% actual_expenses = transactions.where('actual_value < 0').sum(:actual_value) %>
+              	
+              	<% actual_expenses = @transactions.where('actual_value < 0 and budget = false').sum(:actual_value) %>
               	<% planned_expenses = Item.where('amount_calculated < 0').sum(:amount_calculated) %> 
                 <div class="col-sm-4 col-xs-6">
                   <div class="description-block border-right">
@@ -81,7 +94,13 @@
                   <!-- /.description-block -->
                 </div>
                 <!-- /.col -->
-                <% actual_income = transactions.where('actual_value > 0 and reserve = false').sum(:actual_value) %>
+                <% actual_income = @transactions.where('actual_value > 0 And reserve = false and budget = false and savings = false').sum(:actual_value) %>
+                <% #affenkopf = @transactions.where('actual_value > 0 And reserve = false and budget = false and savings = false') 
+                %>
+                <% #affenkopf.find_each do |income|
+                	#puts income.actual_value
+                #end 
+                %>
                 <% planned_income = Item.where('amount_calculated > 0').sum(:amount_calculated) %> 
                 <div class="col-sm-4 col-xs-6">
                   <div class="description-block border-right">
@@ -97,7 +116,7 @@
                 <div class="col-sm-4 col-xs-6">
                   <div class="description-block border-right">
                     <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 20%</span>         
-                    <h5 class="description-header"><%= result %></h5>
+                    <h5 class="description-header" id="balance"><%= result %></h5>
                     <span class="description-text">TOTAL BALANCE</span>
                   </div>
                   <!-- /.description-block -->
@@ -117,3 +136,33 @@
     <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
+<script type="text/javascript">
+	
+	$('#month_select').change(function() {
+		var month = $(this).val();
+			
+		var data = function () {
+			var tmp = null;
+			$.ajax({
+					url: "/get_expenses_grouped",
+					data: {'month': month},
+					dataType: "json",
+					type: "GET",
+					async: false,
+					success: function(data) {
+						tmp = data;
+					}
+				});
+			return tmp;
+		}();
+		Chartkick.eachChart(
+			function(chart) {chart.updateData(data["data"]);}
+		);		
+		$('#start_date').val(data["start_date"]);
+		$('#end_date').val(data["end_date"]);
+		$('#actual_expenses').text(data["expenses"]);
+		$('#actual_income').text(data["income"]);
+		$('#balance').text(data["balance"]);
+	});
+	
+</script>

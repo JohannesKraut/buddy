@@ -15,6 +15,7 @@ class MonthlyStatisticsController < ApplicationController
     end
   end
 
+  
   # GET /monthly_statistics
   # GET /monthly_statistics.json
   def index

@@ -10,9 +10,12 @@
 	if date.present?
 		startDate = date.first.period
 		endDate = date.last.period
+		minDate = date.where(:item => 1).last.period 
+	else
+		minDate = Date.current.beginning_of_month
 	end
 	%>
-	<% minDate = date.where(:item => 1).last.period #Date.current.beginning_of_month #date.first.period %>
+	<% #minDate = date.where(:item => 1).last.period #Date.current.beginning_of_month #date.first.period %>
 	<% maxDate = Date.current.end_of_month #date.last.period %>
 	<!-- Main content -->
 	<section class="content">

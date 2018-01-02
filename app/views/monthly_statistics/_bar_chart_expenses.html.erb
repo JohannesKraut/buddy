@@ -2,7 +2,7 @@
         <div class="col-md-12">
           <div class="box box-default">
             <div class="box-header with-border">
-              <h3 class="box-title">Browser Usage</h3>
+              <h3 class="box-title"><%= @header %></h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                 </button>
@@ -15,31 +15,7 @@
                 <div class="col-md-12">
                   <div class="chart-responsive">
                     <!-- ><canvas id="pieChart" height="150"></canvas> -->
-<% date = MonthlyStatistic.all.order(period: :asc)
-    #last_income = monthly_statistic_start.period #date.where("item_id = ? AND match_value LIKE?", 1,"%1-003870-000001-00%").last
-	if date.present?
-		startDate = date.first.period
-		endDate = date.last.period
-	end
-	%>
-	
-	<% minDate = @last_income.period #Date.current.beginning_of_month #date.first.period %>
-                    <% first_of_month = startDate #Date.current.beginning_of_month
-last_of_next_month = endDate #Date.current.end_of_month %>
-                    <!--
-                    #MonthlyStatistic.where('period BETWEEN ? AND ?', first_of_month, last_of_next_month).find_each do |transaction| 
-                     #@monthlyStatisticsWithNames = Hash.new
-                      #@monthlyStatisticsWithNames[""] = 
-                      #Invoice.joins(:enrollments).uniq
-                   #end 
-                   -->
-                    <%= @chart = MonthlyStatistic.where('period BETWEEN ? AND ?', minDate, last_of_next_month).joins(:item)
-                                        #pie_chart @chart.group(:name).count
-                        @expenses_pie = @chart.where('actual_value < 0').group(:name).order('sum_actual_value ASC').sum(:actual_value)
-						#'sum_total_days DESC').sum(:total_days)
-						#.select('SUM(total_days) as tot').order('tot desc')
-						#@chart.group(:id).having("SUM(actual_value) < 0")
-						column_chart @expenses_pie, adapter: "highcharts", library: {
+                    <%= column_chart @data, adapter: "highcharts", library: {
 								tooltip: { pointFormat: '{point.y:.2f}€' }, 
 							    plotOptions: {
 						        series: {
@@ -50,8 +26,7 @@ last_of_next_month = endDate #Date.current.end_of_month %>
 						            }
 						        }
 						    }
-							} %>
-
+						} %>
                   </div>
                   <!-- ./chart-responsive -->
                 </div>
@@ -67,7 +42,6 @@ last_of_next_month = endDate #Date.current.end_of_month %>
         <!-- /.col -->
       </div>
       <!-- /.row -->
-      
 <script type="text/javascript">
 	
 </script>
