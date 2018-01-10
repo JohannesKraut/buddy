@@ -37,7 +37,29 @@ class FinanceState < ApplicationRecord
           @match_confidence = nil
           @match_type = nil
           @match_value = nil
-
+          @internal_transaction = false
+          @reserve_release = false
+          @reserve_payment = false
+          
+          if transaction.empfaenger_name.present?
+            if transaction.empfaenger_name.upcase == 'TIMO HILBRING'
+              logger.debug "INTERNAL TRANSACTION identified by user name"
+              @internal_transaction = true
+            end
+          else
+            if transaction.empfaenger_konto.present?
+              if Account.where('iban = ?', transaction.empfaenger_konto).first.present?
+                logger.debug "INTERNAL TRANSACTION identified by internal account: " + account.iban.to_s + ' -> ' + transaction.empfaenger_konto.to_s
+                @internal_transaction = true
+              else
+                if Account.where('account_number = ?', transaction.empfaenger_konto).first.present?
+                  logger.debug "INTERNAL TRANSACTION identified by internal account: " + account.account_number.to_s + ' -> ' + transaction.empfaenger_konto.to_s
+                  @internal_transaction = true
+                end              
+              end
+            end
+          end
+          
           #Item.all.each do |item|
           Item.where(:active => true).find_each do |item|
             #puts "CURRENT ITEM: " + item.id.to_s          
@@ -52,17 +74,33 @@ class FinanceState < ApplicationRecord
                 logger.debug "USING DEFAULT VALUE"
                 @planned_value = item.amount_calculated
                 @item_id = item.id
+                
+                if @actual_value < 0   #debit => outgoing transaction
+                  if @item_id != 34   #item found => not unclassified
+                    matched_item = Item.find(@item_id)
+                    if matched_item.reserve == true and @internal_transaction == true
+                      external_account = find_by_account(matched_item.external_account.split("|"), transaction)
+                      if external_account.present? or @match_type.to_s.include? "item_name"
+                         #@match_type.to_s.include? "external_account" or @match_type.to_s.include? "item_name"
+                        @reserve_release = true
+                        logger.debug  "Reserve " + matched_item.name + " released on " + @period.to_s
+                      end
+                    end
+                  end
+                end
+                
                 break   
               end
                     
             end                      
           end   #end item
-          
+                   
           logger.debug  "CREATE MONTHLY STATISTIC"
-          MonthlyStatistic.create(:period => @period, :planned_value => @planned_value, :actual_value => @actual_value, :item_id => @item_id, :hibiscus_sync_id => @hibiscus_sync_id, :match_confidence => @match_confidence, :match_type => @match_type, :match_value => @match_value, :account_id => account.id)
+          MonthlyStatistic.create(:period => @period, :planned_value => @planned_value, :actual_value => @actual_value, :item_id => @item_id, :hibiscus_sync_id => @hibiscus_sync_id, :match_confidence => @match_confidence, :match_type => @match_type, :match_value => @match_value, :account_id => account.id, :internal_transaction => @internal_transaction, :reserve_release => @reserve_release, :reserve_payment => @reserve_payment)
           @last_synchronized = transaction.valuta
           @balance = transaction.saldo
           @hibiscus_id = transaction.id
+          @payment = true
           
         end   #end hibsicus_transaction
         
@@ -91,22 +129,41 @@ class FinanceState < ApplicationRecord
     #HibiscusTransaction.all.order(valuta: :desc).each_with_index do |transaction, index|
   end
   
+  def self.assign_result(hash, match_type, match_confidence, match_value)
+    
+    delimiter = '|'
+    
+    if hash["match_type"].present? 
+        hash["match_type"] = hash["match_type"] + delimiter + match_type.to_s
+    else
+        hash["match_type"] = match_type.to_s
+    end
+    if hash["match_value"].present? 
+        hash["match_value"] = hash["match_value"] + delimiter + match_value.to_s
+    else
+        hash["match_value"] = match_value.to_s
+    end
+    hash["confidence"] = match_confidence.to_f + 0.5
+        
+  end
+  
   def self.match_item_to_transaction(account, item, transaction)
     
     @return = Hash.new
     @return["match_type"] = nil
     @return["match_value"] = nil
     @return["confidence"] = 0
-    
+
     # try to match via external account
     if item.external_account.present?
       @account_found = find_by_account(item.external_account.split("|"), transaction)
       if @account_found.present?
-        if item.reserve == false
-          @return["match_type"] = "external_account"
-          @return["match_value"] = @account_found
-          @return["confidence"] = @return["confidence"].to_f + 0.5
-          logger.debug "TRANSACTION FOUND BY EXTERNAL ACCOUNT " + @account_found
+        if item.reserve.present?
+          if item.reserve == false
+            #@return["match_type"] = "external_account"
+            assign_result(@return, "external_account", 0.5, @account_found)
+            logger.debug "TRANSACTION FOUND BY EXTERNAL ACCOUNT " + @account_found
+          end
         end
         #return @return
       end
@@ -116,9 +173,7 @@ class FinanceState < ApplicationRecord
     if item.key_words.present?
       @keyword_found = find_by_keyword(item.key_words.split("|"), transaction)
       if @keyword_found.present?
-        @return["match_type"] = "key_word"
-        @return["match_value"] = @keyword_found
-        @return["confidence"] = @return["confidence"].to_f + 0.5
+        assign_result(@return, "key_word", 0.5, @keyword_found)
         logger.debug "TRANSACTION FOUND BY KEY WORD " + @keyword_found.to_s
         #return @return        
       end
@@ -128,9 +183,7 @@ class FinanceState < ApplicationRecord
     if item.name.present?
       @keyword_found = find_by_name(item.name, transaction)
       if @keyword_found.present?
-        @return["match_type"] = "item_name"
-        @return["match_value"] = @keyword_found
-        @return["confidence"] = @return["confidence"].to_f + 0.5
+        assign_result(@return, "item_name", 0.5, @keyword_found)
         logger.debug "TRANSACTION FOUND BY NAME " + @keyword_found.to_s
         #return @return        
       end
@@ -142,8 +195,9 @@ class FinanceState < ApplicationRecord
         #if transaction.empfaenger_konto == Account.find(item.account_id).iban
         @confidence = @return["confidence"].to_f
         if @confidence == 0 && item.reserve == false
-          @return["match_type"] = "default"
-          @return["match_value"] = item.account_id        
+          assign_result(@return, "default", 0.5, item.account_id )
+          #@return["match_type"] = "default"
+          #@return["match_value"] = item.account_id        
           logger.debug "TRANSACTION FOUND BY ACCOUNT " + account.description
         end
       end

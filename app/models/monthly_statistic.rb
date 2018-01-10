@@ -35,9 +35,6 @@ class MonthlyStatistic < ApplicationRecord
         end
         @month_date = {"index" => index, "month" => month_name, "start_date" => start_date, "end_date" => end_date, "id" => transaction_id}
         @month_dates[transaction_id.to_s] = @month_date
-        #@month_date['month'] = 
-        #@month_date['id'] = 
-        #@month_dates.push(@month_date)
       end
     end
     puts @month_dates
@@ -46,31 +43,59 @@ class MonthlyStatistic < ApplicationRecord
  
   def self.get_date_of_last_income
     salaries = get_salaries
-    result = Date.current.end_of_month
-    
-    if salaries[salaries.size].present?
-      #statistic_id = salaries.last['id'].to_i
-      #monthly_statistic = MonthlyStatistic.find(statistic_id)
-      result = salaries[salaries.size]["start_date"] #monthly_statistic.period
+    if salaries.values[salaries.size-1].present?
+      result = salaries.values[salaries.size-1]
     end
-    
     return result    
   end
   
   def self.get_date_of_first_income
     salaries = get_salaries
     result = Date.current.beginning_of_month
-    
     if salaries.values[0].present?
-      #statistic_id = salaries[0]["start_date"].to_i
-      #monthly_statistic = MonthlyStatistic.find(statistic_id)
-      result = salaries.values[0]["start_date"] #monthly_statistic.period
+      result = salaries.values[0]
     end
-    
     return result    
   end
   
+  def self.get_expenses_for_month(id)
+    date_range_month = get_start_end_date_for_month(id)
+    return get_expenses(date_range_month["start_date"], date_range_month["end_date"])
+  end
   
+  def self.get_income_for_month(id)
+    date_range_month = get_start_end_date_for_month(id)
+    return get_income(date_range_month["start_date"], date_range_month["end_date"])
+  end
+  
+  def self.get_balance_for_month(id)
+    return get_income_for_month(id) + get_expenses_for_month(id)
+  end
+  
+  def self.get_start_end_date_for_month(id)
+    result = Hash.new
+    salary = MonthlyStatistic.get_salaries[id]
+    result["start_date"] = salary["start_date"].to_s
+    result["end_date"]  = salary["end_date"].to_s
+    return result
+  end
+  
+  def self.get_expenses(start_date, end_date)
+    return get_statistics_between(start_date, end_date).where('actual_value < 0 and internal_transaction = false').sum(:actual_value)
+  end
+  
+  def self.get_income(start_date, end_date)
+    return get_statistics_between(start_date, end_date).where('actual_value > 0 And reserve = false and budget = false and savings = false and internal_transaction =false').sum(:actual_value)
+  end
+  
+  def self.get_balance(start_date, end_date)
+    return get_income(start_date, end_date) + get_expenses(start_date, end_date)
+  end
+  
+  def self.get_statistics_between(start_date, end_date)
+    return MonthlyStatistic.where('period BETWEEN ? AND ?', start_date, end_date).joins(:item)
+  end
+    
   require 'csv'
   #uses import method of referenced class CSV
   def self.import(file)

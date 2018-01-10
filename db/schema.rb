@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171224113807) do
+ActiveRecord::Schema.define(version: 20180109173342) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "account_number"
@@ -92,6 +92,9 @@ ActiveRecord::Schema.define(version: 20171224113807) do
     t.string "match_type"
     t.string "match_value"
     t.bigint "account_id"
+    t.boolean "internal_transaction"
+    t.boolean "reserve_payment"
+    t.boolean "reserve_release"
     t.index ["account_id"], name: "index_monthly_statistics_on_account_id"
     t.index ["item_id"], name: "index_monthly_statistics_on_item_id"
   end

@@ -1,7 +1,7 @@
     <% 
     @month_dates = MonthlyStatistic.get_salaries
-    @minDate = MonthlyStatistic.get_date_of_first_income
-    @maxDate = MonthlyStatistic.get_date_of_last_income
+    @minDate = MonthlyStatistic.get_date_of_last_income["start_date"] 
+    @maxDate = MonthlyStatistic.get_date_of_last_income["end_date"] 
     %>
 	<% @transactions = MonthlyStatistic.where('period BETWEEN ? AND ?', @minDate, @maxDate).joins(:item)  %>
  <!-- Content Wrapper. Contains page content -->
@@ -65,7 +65,7 @@
               <div class="row">
                 <div class="col-md-12">
                   <div class="chart-responsive">
-                  	<% @data = @transactions.where('actual_value < 0').group(:name).order('sum_actual_value ASC').sum(:actual_value)
+                  	<% @data = @transactions.where('actual_value < 0 and budget = false and internal_transaction =false').group(:name).order('sum_actual_value ASC').sum(:actual_value)
                   	#@header = 'Expenses ' + @maxDate.beginning_of_month.next_month.strftime("%B %Y").to_s 
                   	%>
                   	<% #+ ' (' + @minDate.to_s + ' - ' + @maxDate.to_s + ')' 
@@ -82,7 +82,7 @@
   			<div class="box-footer">
               <div class="row">
               	
-              	<% actual_expenses = @transactions.where('actual_value < 0 and budget = false').sum(:actual_value) %>
+              	<% actual_expenses = @transactions.where('actual_value < 0 and budget = false and internal_transaction =false').sum(:actual_value) %>
               	<% planned_expenses = Item.where('amount_calculated < 0').sum(:amount_calculated) %> 
                 <div class="col-sm-4 col-xs-6">
                   <div class="description-block border-right">
@@ -94,7 +94,7 @@
                   <!-- /.description-block -->
                 </div>
                 <!-- /.col -->
-                <% actual_income = @transactions.where('actual_value > 0 And reserve = false and budget = false and savings = false').sum(:actual_value) %>
+                <% actual_income = @transactions.where('actual_value > 0 And reserve = false and budget = false and savings = false and internal_transaction =false').sum(:actual_value) %>
                 <% #affenkopf = @transactions.where('actual_value > 0 And reserve = false and budget = false and savings = false') 
                 %>
                 <% #affenkopf.find_each do |income|

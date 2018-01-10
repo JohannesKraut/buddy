@@ -82,7 +82,27 @@
 		    <%= form.text_field @transaction.valuta, :value => @transaction.valuta, id: :monthly_statistic_hibiscus_transaction_valuta, class: "form-control", placeholder: "Test", readonly: true %>
 		</div>
 	  </div>
-		
+	  <div class="form-group">
+	    <%= content_tag(:div, :class => "checkbox") do %>
+			<%= content_tag(:label) do %>
+		    	<%= form.check_box(:internal_transaction, id: :monthly_statistic_internal_transaction, class: "checkbox") + :internal_transaction %>
+		    <% end %>
+		<% end %>
+	  </div>
+	  <div class="form-group">
+	    <%= content_tag(:div, :class => "checkbox") do %>
+			<%= content_tag(:label) do %>
+		    	<%= form.check_box(:reserve_payment, id: :monthly_statistic_reserve_payment, class: "checkbox") + :reserve_payment %>
+		    <% end %>
+		<% end %>
+	  </div>
+	  <div class="form-group">
+	    <%= content_tag(:div, :class => "checkbox") do %>
+			<%= content_tag(:label) do %>
+		    	<%= form.check_box(:reserve_release, id: :monthly_statistic_reserve_release, class: "checkbox") + :reserve_release %>
+		    <% end %>
+		<% end %>
+	  </div>		
     </div>
   	<!-- /.box-body -->
     <div class="box-footer">
