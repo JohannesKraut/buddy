@@ -79,11 +79,12 @@ class MonthlyStatistic < ApplicationRecord
     result["end_date"]  = salary["end_date"].to_s
     return result
   end
-  
+  #@transactions.where('actual_value < 0 and budget = false and internal_transaction =false').sum(:actual_value) 
   def self.get_expenses(start_date, end_date)
     return get_statistics_between(start_date, end_date).where('actual_value < 0 and internal_transaction = false').sum(:actual_value)
   end
   
+  #@transactions.where('actual_value > 0 And reserve = false and budget = false and savings = false and internal_transaction =false'
   def self.get_income(start_date, end_date)
     return get_statistics_between(start_date, end_date).where('actual_value > 0 And reserve = false and budget = false and savings = false and internal_transaction =false').sum(:actual_value)
   end
@@ -95,7 +96,12 @@ class MonthlyStatistic < ApplicationRecord
   def self.get_statistics_between(start_date, end_date)
     return MonthlyStatistic.where('period BETWEEN ? AND ?', start_date, end_date).joins(:item)
   end
-    
+  
+  def self.get_expenses_grouped(start_date, end_date, group_by)
+    return get_statistics_between(start_date, end_date).where('actual_value < 0 and internal_transaction = false').group(:name).order('sum_actual_value ASC').sum(:actual_value)
+    #.where('actual_value < 0 and internal_transaction =false').group(group_by).order('sum_actual_value ASC').sum(:actual_value)
+  end
+
   require 'csv'
   #uses import method of referenced class CSV
   def self.import(file)

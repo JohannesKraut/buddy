@@ -3,7 +3,7 @@
     @minDate = MonthlyStatistic.get_date_of_last_income["start_date"] 
     @maxDate = MonthlyStatistic.get_date_of_last_income["end_date"] 
     %>
-	<% @transactions = MonthlyStatistic.where('period BETWEEN ? AND ?', @minDate, @maxDate).joins(:item)  %>
+	<% @transactions = MonthlyStatistic.get_statistics_between(@minDate, @maxDate)  %>
  <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -15,7 +15,7 @@
       <%= render 'navigations/navigation_bar' %>
     </section>
 	<!-- Main content -->
-	<section class="content">
+	<section class="content">	
       <div class="row">
         <div class="col-md-12">
           <div class="box box-default">
@@ -29,20 +29,19 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-	              <!-- /.row -->
-	              <div class="row">
-	                <div class="col-md-12">
-	                	<% @salary_select = Array.new %>
-	                	<% 
-	                	@month_dates.each do |key, value|
-	                		@salary_select.push([value["month"].to_s, value["id"].to_s]) #month
-	                		end %>
-	                	<%= select_tag "month_select", options_for_select(@salary_select, @salary_select.last), {class: "form-control select2"} %>
-	                </div>
-	                <!-- /.col -->
-	              </div>
-	              <!-- /.row -->
-        		<div class="row">
+              <div class="row">
+                <div class="col-md-12">
+                	<% @salary_select = Array.new %>
+                	<% 
+                	@month_dates.each do |key, value|
+                		@salary_select.push([value["month"].to_s, value["id"].to_s]) #month
+                		end %>
+                	<%= select_tag "month_select", options_for_select(@salary_select, @salary_select.last), {class: "form-control select2"} %>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+	    	 <div class="row">
 					<div class="col-xs-6">		
 			  			<div class="input-group date">
 			      			<div class="input-group-addon">
@@ -60,29 +59,22 @@
 			  			</div>
 		  			</div>
 				</div>
-              </div>
-              <!-- /.row -->
               <div class="row">
                 <div class="col-md-12">
-                  <div class="chart-responsive">
-                  	<% @data = @transactions.where('actual_value < 0 and budget = false and internal_transaction =false').group(:name).order('sum_actual_value ASC').sum(:actual_value)
+                  	<% @data = MonthlyStatistic.get_expenses_grouped(@minDate, @maxDate, :name)
                   	#@header = 'Expenses ' + @maxDate.beginning_of_month.next_month.strftime("%B %Y").to_s 
                   	%>
                   	<% #+ ' (' + @minDate.to_s + ' - ' + @maxDate.to_s + ')' 
                   	%>
 					<%= render 'monthly_statistics/bar_chart_expenses', locals: {header: @header, data: @data} %>
-                  </div>
-                  <!-- ./chart-responsive -->
-                </div>
-                <!-- /.col -->
+				</div>
               </div>
-              <!-- /.row -->
-            </div>
+            </div>				
             <!-- /.box-body -->
-  			<div class="box-footer">
+			<div class="box-footer clearfix">
               <div class="row">
               	
-              	<% actual_expenses = @transactions.where('actual_value < 0 and budget = false and internal_transaction =false').sum(:actual_value) %>
+              	<% actual_expenses = MonthlyStatistic.get_expenses(@minDate, @maxDate) %>
               	<% planned_expenses = Item.where('amount_calculated < 0').sum(:amount_calculated) %> 
                 <div class="col-sm-4 col-xs-6">
                   <div class="description-block border-right">
@@ -94,7 +86,7 @@
                   <!-- /.description-block -->
                 </div>
                 <!-- /.col -->
-                <% actual_income = @transactions.where('actual_value > 0 And reserve = false and budget = false and savings = false and internal_transaction =false').sum(:actual_value) %>
+                <% actual_income = MonthlyStatistic.get_income(@minDate, @maxDate)  %>
                 <% #affenkopf = @transactions.where('actual_value > 0 And reserve = false and budget = false and savings = false') 
                 %>
                 <% #affenkopf.find_each do |income|
@@ -112,7 +104,7 @@
                   <!-- /.description-block -->
                 </div>
                 <!-- /.col -->
-                <% result = actual_income + actual_expenses %> 
+                <% result = MonthlyStatistic.get_balance(@minDate, @maxDate)  %> 
                 <div class="col-sm-4 col-xs-6">
                   <div class="description-block border-right">
                     <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 20%</span>         
@@ -129,6 +121,103 @@
           </div>
           <!-- /.box -->
         </div>
+	  </div>
+	  <!-- /.row -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box box-default">
+            <div class="box-header with-border">
+              <h3 class="box-title">Browser Usage</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+              
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+            	<div class="row">
+                	<div class="col-md-12">
+                		<p class="text-center">
+                			<% reserves = MonthlyStatistic.where("actual_value < 0 and reserve_release = false and reserve_payment = false and internal_transaction = true and period between ? and ?", @minDate, @maxDate) %>
+                    		<strong><%= reserves.sum(:actual_value) %></strong>
+                  		</p>
+                	</div>
+        		</div>
+              <div class="row">
+                <div class="col-md-12">
+	            	<table id="example1" class="display">
+						<thead>
+							<tr>
+								<th>Reserve</th>
+								<th>Date of last release</th>
+								<th>Target date</th>
+								<th>Reserve amount</th>
+								<th>Planned amount</th>
+								<th>Planned amount</th>
+								<th>Planned amount</th>
+								<th>Planned amount</th>
+							</tr>
+						</thead>
+						<tbody>
+						<% 
+	            		Item.where(:reserve => true).each do |reserve|
+	            			transactions = MonthlyStatistic.where(:item_id => reserve.id).order(period: :asc)
+	            			interval = Interval.find(reserve.interval_id)
+	            			months_to_go = (interval.denominator/interval.numerator).to_i
+
+	            			last_release = transactions.where(:reserve_release => true).last
+	            			transactions.where(:reserve_release => true).each do |blubb|
+	            				puts blubb.period.to_s + " " + blubb.id.to_s
+	            			end
+	            			if last_release.present?
+	            				last_release_date = last_release.period
+	            			else
+	            				last_release_date = reserve.maturity
+	            			end
+	            			target_date = last_release_date + months_to_go.months
+	            			reserve_amount = transactions.where("actual_value < 0 and reserve_release = false and reserve_payment = false and internal_transaction = true and period between ? and ?", last_release_date, target_date)
+	            			puts reserve_amount
+	            			reserve_amount_actual = reserve_amount.sum(:actual_value)
+							reserve_amount_planned = reserve_amount.sum(:planned_value) #* months_to_go
+							target_amount = reserve.total_amount
+							months_done = (target_date.year * 12 + target_date.month) - (Date.today.year * 12 + Date.today.month)
+
+	            		#where('period BETWEEN ? AND ?', start_date, end_date)
+	            		%>
+						      <tr>
+						        <td><%= link_to(reserve.name, reserve) %></td>
+						        <td><%= last_release_date %></td>
+						        <td><%= if last_release.present?
+						        	link_to(last_release.id, last_release)
+						        	else
+						        		''
+						        	end %></td>
+						        <td><%= target_date %></td>
+						        <td><%= months_done %></td>
+						        <td><%= reserve_amount_actual %></td>
+						        <td><%= reserve_amount_planned %></td>
+						        <td><%= target_amount %></td>
+						      </tr>
+						    <% end %>
+						</tbody>
+					</table>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+			</div>
+			<!-- /.box-body -->
+   			<div class="box-footer">
+              <div class="row">           	
+              </div>
+              <!-- /.row -->
+            </div>
+            <!-- /.box-footer -->          
+          </div>
+          <!-- /.box -->
+        </div>
         <!-- /.col -->
       </div>
       <!-- /.row -->
@@ -137,6 +226,8 @@
 </div>
 <!-- /.content-wrapper -->
 <script type="text/javascript">
+var tableId = '#example1'
+var table = $(tableId).DataTable();
 	
 	$('#month_select').change(function() {
 		var month = $(this).val();

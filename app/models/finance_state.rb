@@ -71,7 +71,7 @@ class FinanceState < ApplicationRecord
               @match_value = @match["match_value"]
               if @match_value.present?
                 #@match["match_type"] != "default"
-                logger.debug "USING DEFAULT VALUE"
+                #logger.debug "USING DEFAULT VALUE"
                 @planned_value = item.amount_calculated
                 @item_id = item.id
                 
@@ -80,10 +80,11 @@ class FinanceState < ApplicationRecord
                     matched_item = Item.find(@item_id)
                     if matched_item.reserve == true and @internal_transaction == true
                       external_account = find_by_account(matched_item.external_account.split("|"), transaction)
-                      if external_account.present? or @match_type.to_s.include? "item_name"
+                      if external_account.present? #and transaction.art == 'Kontouebertrag'
                          #@match_type.to_s.include? "external_account" or @match_type.to_s.include? "item_name"
                         @reserve_release = true
                         logger.debug  "Reserve " + matched_item.name + " released on " + @period.to_s
+                        matched_item.update(:maturity => transaction.valuta)
                       end
                     end
                   end
@@ -143,8 +144,12 @@ class FinanceState < ApplicationRecord
     else
         hash["match_value"] = match_value.to_s
     end
-    hash["confidence"] = match_confidence.to_f + 0.5
-        
+    if hash["confidence"].present? 
+        hash["confidence"] = hash["confidence"].to_f + match_confidence.to_f
+    else
+        hash["confidence"] = match_confidence.to_f
+    end
+       
   end
   
   def self.match_item_to_transaction(account, item, transaction)
@@ -209,7 +214,7 @@ class FinanceState < ApplicationRecord
     
     accounts_array.each do |account|
       
-      @account = account.downcase
+      @account = account.delete('|').downcase
       logger.debug "FIND BY ACCOUNT: " + account
       #@accounts = /#{account}/im
       #if transaction.empfaenger_konto =~ @accounts
