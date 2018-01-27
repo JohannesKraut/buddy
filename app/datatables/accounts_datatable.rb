@@ -26,6 +26,7 @@ private
         account.iban,
         account.bic,
         account.hibiscus_account_id,
+        account.item_id,
         link_to('Edit', account),
         link_to('Destroy', account, method: :delete, data: { confirm: 'Are you sure?' })
       ]

@@ -2,10 +2,11 @@
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1>New navigations
+		<h1>New saving
 		  <small>edit data</small>
 		</h1>
 		<%= render 'navigations/navigation_bar' %>
+		<%= render 'layouts/state_info' %>
 	</section>
 	<!-- Main content -->
     <section class="content">
@@ -19,7 +20,8 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-				<%= render 'form', navigation: @navigation %>
+				<%= render 'form', saving: @saving %>
+				<%= link_to 'Back', savings_path %>
 		    </div>
             <!-- /.box-body -->
           </div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180109173342) do
+ActiveRecord::Schema.define(version: 20180124194727) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "account_number"
@@ -20,6 +20,8 @@ ActiveRecord::Schema.define(version: 20180109173342) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "hibiscus_account_id"
+    t.bigint "item_id"
+    t.index ["item_id"], name: "index_accounts_on_item_id"
   end
 
   create_table "categories", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -74,10 +76,13 @@ ActiveRecord::Schema.define(version: 20180109173342) do
     t.bigint "account_id"
     t.string "external_account"
     t.boolean "budget"
-    t.boolean "savings"
+    t.bigint "savings_id"
+    t.bigint "parent_id"
     t.index ["account_id"], name: "index_items_on_account_id"
     t.index ["category_id"], name: "index_items_on_category_id"
     t.index ["interval_id"], name: "index_items_on_interval_id"
+    t.index ["parent_id"], name: "index_items_on_parent_id"
+    t.index ["savings_id"], name: "index_items_on_savings_id"
   end
 
   create_table "monthly_statistics", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -95,6 +100,7 @@ ActiveRecord::Schema.define(version: 20180109173342) do
     t.boolean "internal_transaction"
     t.boolean "reserve_payment"
     t.boolean "reserve_release"
+    t.string "text"
     t.index ["account_id"], name: "index_monthly_statistics_on_account_id"
     t.index ["item_id"], name: "index_monthly_statistics_on_item_id"
   end
@@ -109,10 +115,20 @@ ActiveRecord::Schema.define(version: 20180109173342) do
     t.integer "order_id"
   end
 
+  create_table "savings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "name"
+    t.string "description"
+    t.integer "duration"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_foreign_key "accounts", "items"
   add_foreign_key "finance_states", "accounts"
   add_foreign_key "items", "accounts"
   add_foreign_key "items", "categories"
   add_foreign_key "items", "intervals"
+  add_foreign_key "items", "savings", column: "savings_id"
   add_foreign_key "monthly_statistics", "accounts"
   add_foreign_key "monthly_statistics", "items"
 end

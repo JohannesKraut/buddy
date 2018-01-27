@@ -34,10 +34,11 @@ private
     #"0" => "id", "1" => "period", "2" => "item_id", "3" => "planned_value", "4" => "actual_value"
     statistics.order(:period).each_with_index do |monthly_statistic, index|
     #monthly_statistics.all.order(:period).each_with_index do |monthly_statistic, index|
-      @transaction = find_transaction(monthly_statistic.hibiscus_sync_id)
+      #@transaction = find_transaction(monthly_statistic.hibiscus_sync_id)
+      #@transaction["text"] 
         #Account.find(monthly_statistic.account_id).description,
         #find_item(monthly_statistic.item_id),
-      
+              
       row = [
         link_to(monthly_statistic.id, monthly_statistic),
         monthly_statistic.period,
@@ -49,7 +50,7 @@ private
         monthly_statistic.match_confidence,
         monthly_statistic.match_type,
         monthly_statistic.match_value,
-        @transaction["text"] 
+        monthly_statistic.text
       ]
       data.push(row)
     end

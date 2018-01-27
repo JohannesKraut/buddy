@@ -42,7 +42,8 @@ private
         @rollup,
         find_account(item.account_id),
         item.external_account,
-        item.key_words       
+        item.key_words,
+        item.parent_id   
       ]
       puts data
       #Interval.find(item.interval_id).description,

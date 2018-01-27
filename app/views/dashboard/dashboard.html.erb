@@ -1,7 +1,10 @@
     <% 
     @month_dates = MonthlyStatistic.get_salaries
-    @minDate = MonthlyStatistic.get_date_of_last_income["start_date"] 
-    @maxDate = MonthlyStatistic.get_date_of_last_income["end_date"] 
+    if MonthlyStatistic.get_date_of_last_income.present?
+		@minDate = MonthlyStatistic.get_date_of_last_income["start_date"] 
+	    @maxDate = MonthlyStatistic.get_date_of_last_income["end_date"]    	
+    end
+
     %>
 	<% @transactions = MonthlyStatistic.get_statistics_between(@minDate, @maxDate)  %>
  <!-- Content Wrapper. Contains page content -->
@@ -62,7 +65,8 @@
               <div class="row">
                 <div class="col-md-12">
                   	<% @data = MonthlyStatistic.get_expenses_grouped(@minDate, @maxDate, :name)
-                  	#@header = 'Expenses ' + @maxDate.beginning_of_month.next_month.strftime("%B %Y").to_s 
+                  	#@header = @minDate.strftime("%d.%m.%Y").to_s + ' - ' + @maxDate.strftime("%d.%m.%Y").to_s
+                  	#@maxDate.beginning_of_month.next_month.strftime("%B %Y").to_s 
                   	%>
                   	<% #+ ' (' + @minDate.to_s + ' - ' + @maxDate.to_s + ')' 
                   	%>
@@ -75,10 +79,10 @@
               <div class="row">
               	
               	<% actual_expenses = MonthlyStatistic.get_expenses(@minDate, @maxDate) %>
-              	<% planned_expenses = Item.where('amount_calculated < 0').sum(:amount_calculated) %> 
+              	<% planned_expenses = Item.where('amount_calculated < 0 and parent_id is NULL').sum(:amount_calculated) %> 
                 <div class="col-sm-4 col-xs-6">
                   <div class="description-block border-right">
-                    <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 17%</span>
+                    <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> <%= ((1-(actual_expenses/planned_expenses))*100).round(2)%>% </span>
                     <h5 class="description-header" id="actual_expenses"><%= actual_expenses %></h5>
                     <h5 class="description-header" id="planned_expenses"><%= planned_expenses %></h5>
                     <span class="description-text">TOTAL EXPENSES</span>
@@ -96,7 +100,7 @@
                 <% planned_income = Item.where('amount_calculated > 0').sum(:amount_calculated) %> 
                 <div class="col-sm-4 col-xs-6">
                   <div class="description-block border-right">
-                    <span class="description-percentage text-yellow"><i class="fa fa-caret-left"></i> 0%</span>
+                    <span class="description-percentage text-yellow"><i class="fa fa-caret-left"></i><%= (((actual_income/planned_income)-1)*100).round(2)%>% </span>
                     <h5 class="description-header" id="actual_income"><%= actual_income %></h5>
                     <h5 class="description-header" id="planned_income"><%= planned_income %></h5>
                     <span class="description-text">TOTAL INCOME</span>
@@ -107,7 +111,7 @@
                 <% result = MonthlyStatistic.get_balance(@minDate, @maxDate)  %> 
                 <div class="col-sm-4 col-xs-6">
                   <div class="description-block border-right">
-                    <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> 20%</span>         
+                    <span class="description-percentage text-green"><i class="fa fa-caret-up"></i> </span>         
                     <h5 class="description-header" id="balance"><%= result %></h5>
                     <span class="description-text">TOTAL BALANCE</span>
                   </div>
@@ -124,12 +128,110 @@
 	  </div>
 	  <!-- /.row -->
       <div class="row">
-        <div class="col-md-12">
-          <div class="box box-default">
+      	<div class="col-md-8">      
+          <div class="box box-info">
             <div class="box-header with-border">
-              <h3 class="box-title">Browser Usage</h3>
+              <h3 class="box-title">Current balances</h3>
+
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="table-responsive">
+                <table class="table no-margin">
+                  <thead>
+                  <tr>
+                    <th>Status</th>
+                    <th>Account</th>
+                    <th>Period</th>
+                    <th>Balance</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  	<% FinanceState.all.order(:account_id).each do |account| %>
+                  <tr>
+                    <td><span class="label label-success">In balance</span></td>
+                    <td><%= Account.find(account.account_id).description %></td>
+                    <td><%= account.period %></td>
+                    <td><%= account.balance %></td>
+                  </tr>
+					<% end %>
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.table-responsive -->
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer clearfix">
+            	<%= form_tag synchronize_finance_states_path, multipart: true do %>
+					<%= submit_tag "Synchronize", class: "pull-right btn btn-default" %>
+				<% end %>
+            </div>
+            <!-- /.box-footer -->
+          </div>
+          <!-- /.box -->
+          </div>
+          <!-- /.col -->
+      	<div class="col-md-4">
+          <div class="box box-default">
+            <div class="box-header with-border">
+              <h3 class="box-title">Budgets</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="table-responsive">
+                <table class="table no-margin">
+                  <thead>
+                  <tr>
+                    <th>Status</th>
+                    <th>Account</th>
+                    <th>Period</th>
+                    <th>Balance</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  	<% Item.where(:budget => true).each do |budget| %>
+                  <tr>
+                  	<% actual_budget = MonthlyStatistic.collect_monthly_expenses_clean(@minDate, @maxDate).where(:item_id => budget.id).sum(:actual_value) %>
+                  	<% planned_budget = budget.total_amount%>
+                    <td><span class="label label-success"><%= ((1-(actual_budget/planned_budget))*100).round(2)%></span></td>
+                    <td><%= budget.name %></td>
+                    <td><%= actual_budget-planned_budget %></td>
+                    <td><%= actual_budget %></td>
+                    <td><%= planned_budget %></td>
+                  </tr>
+					<% end %>
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.table-responsive -->
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer no-padding">
+            </div>
+            <!-- /.footer -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col --> 
+      </div>
+      <!-- /.row -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box box-default collapsed-box">
+            <div class="box-header with-border">
+              <h3 class="box-title">Reserves</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
                 </button>
                 <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
               </div>
@@ -137,13 +239,8 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-            	<div class="row">
-                	<div class="col-md-12">
-                		<p class="text-center">
-                			<% reserves = MonthlyStatistic.where("actual_value < 0 and reserve_release = false and reserve_payment = false and internal_transaction = true and period between ? and ?", @minDate, @maxDate) %>
-                    		<strong><%= reserves.sum(:actual_value) %></strong>
-                  		</p>
-                	</div>
+         		<div class="row">
+
         		</div>
               <div class="row">
                 <div class="col-md-12">
@@ -158,10 +255,12 @@
 								<th>Planned amount</th>
 								<th>Planned amount</th>
 								<th>Planned amount</th>
+								<th>Planned amount</th>
 							</tr>
 						</thead>
 						<tbody>
 						<% 
+	            		@reserve_amount_planned_aggregate = 0
 	            		Item.where(:reserve => true).each do |reserve|
 	            			transactions = MonthlyStatistic.where(:item_id => reserve.id).order(period: :asc)
 	            			interval = Interval.find(reserve.interval_id)
@@ -176,6 +275,9 @@
 	            			else
 	            				last_release_date = reserve.maturity
 	            			end
+	            			if (last_release_date.year * 12 + last_release_date.month) == (Date.today.year * 12 + Date.today.month)
+	            				last_release_date = Date.today.beginning_of_month
+	            			end
 	            			target_date = last_release_date + months_to_go.months
 	            			reserve_amount = transactions.where("actual_value < 0 and reserve_release = false and reserve_payment = false and internal_transaction = true and period between ? and ?", last_release_date, target_date)
 	            			puts reserve_amount
@@ -183,7 +285,7 @@
 							reserve_amount_planned = reserve_amount.sum(:planned_value) #* months_to_go
 							target_amount = reserve.total_amount
 							months_done = (target_date.year * 12 + target_date.month) - (Date.today.year * 12 + Date.today.month)
-
+							@reserve_amount_planned_aggregate = @reserve_amount_planned_aggregate + reserve_amount_planned
 	            		#where('period BETWEEN ? AND ?', start_date, end_date)
 	            		%>
 						      <tr>
@@ -196,9 +298,10 @@
 						        	end %></td>
 						        <td><%= target_date %></td>
 						        <td><%= months_done %></td>
-						        <td><%= reserve_amount_actual %></td>
+						        <td><%= reserve.amount_calculated %></td>
 						        <td><%= reserve_amount_planned %></td>
 						        <td><%= target_amount %></td>
+						        <td><%= reserve_amount_actual%></td>
 						      </tr>
 						    <% end %>
 						</tbody>
@@ -207,6 +310,52 @@
                 <!-- /.col -->
               </div>
               <!-- /.row -->
+              <div class="row">
+  		            <% reserve_amount = MonthlyStatistic.get_statistics_between(@minDate, @maxDate).where("actual_value < 0 and reserve_release = false and reserve_payment = false and internal_transaction = true and reserve = true") %>							
+					<% @planned_reserves_amount = reserve_amount.sum(:planned_value) %>
+					<% @actual_reserves_amount = reserve_amount.sum(:actual_value) %>
+        			<div class="col-md-12">
+	            	<table id="example" class="display">
+						<thead>
+							  <col width="30%">
+							  <col width="30%">
+							  <col width="30%">
+							<tr>
+								<th>Period</th>
+								<th>Planned reserves</th>
+								<th>Actual reserves</th>
+								<th>Delta</th>
+							</tr>
+						</thead>
+						<tbody>
+						      <tr>
+						      	<td><%= if @salary_select.present?
+						      		@salary_select.last[0] 
+						      		end %></td>
+						      	<td><%= @planned_reserves_amount %></td>
+						      	<td><%= @actual_reserves_amount %></td>
+						        <td><%= @planned_reserves_amount - @actual_reserves_amount %></td>
+						      </tr>
+						      <tr>
+						      	<td>aggregate</td>
+						      	<td><%= @reserve_amount_planned_aggregate %></td>
+						      	<td><%= FinanceState.where("account_id = 4").last.balance %></td>
+						        <td><%= FinanceState.where("account_id = 4").last.balance + @reserve_amount_planned_aggregate %></td>
+						      </tr>						
+						</tbody>
+					</table>
+					</div>
+        		</div>
+              <div class="row">
+                	<div class="col-md-12">
+                		<div class="row">
+	                		<p class="text-center">
+								<strong><%=  %></strong>								
+								<strong><%= %></strong>
+	                  		</p>
+                  		</div>
+                	</div>
+        		</div>
 			</div>
 			<!-- /.box-body -->
    			<div class="box-footer">
@@ -220,7 +369,7 @@
         </div>
         <!-- /.col -->
       </div>
-      <!-- /.row -->
+      <!-- /.row -->      
     </section>
     <!-- /.content -->
 </div>

@@ -49,6 +49,12 @@
 	    	<%= form.label :hibiscus_account_id %>
 	    	<%= form.text_field :hibiscus_account_id, id: :account_account_id, class: "form-control", placeholder: "Test" %>
 		 </div>
+	  </div>
+	  <div class="form-group">
+		 <div class="field">
+	    	<%= form.label :item_id %>
+	  	<%= form.collection_select :item_id, Item.all ,:id, :name, {}, {class: "form-control select2", :id => "item_id" }%>
+		 </div>
 	  </div>		
     </div>
   	<!-- /.box-body -->

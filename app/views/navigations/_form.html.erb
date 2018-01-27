@@ -10,33 +10,53 @@
       </ul>
     </div>
   <% end %>
+  <!-- general form elements -->
+  <div class="box box-primary">
+    <div class="box-header with-border">
+      <h3 class="box-title">Edit data</h3>
+    </div>
+    <!-- /.box-header -->
+    <!-- form start -->
+    <form role="form">
+      <div class="box-body">
+	  <div class="form-group">
+	  	<div class="field">
+		    <%= form.label :order_id %>
+		    <%= form.text_field :order_id, id: :navigation_order_id, class: "form-control", placeholder: "Test" %>
+		</div>
+	  </div>
+	  <div class="form-group">
+	  	<div class="field">
+		    <%= form.label :display_text %>
+		    <%= form.text_field :display_text, id: :navigation_display_text, class: "form-control", placeholder: "Test" %>
+		</div>
+	  </div>
+	  <div class="form-group">
+	  	<div class="field">
+		    <%= form.label :url %>
+		    <%= form.text_field :url, id: :navigation_url, class: "form-control", placeholder: "Test" %>
+		</div>
+	  </div>
+	  <div class="form-group">
+	  	<div class="field">
+		    <%= form.label :html_class %>
+		    <%= form.text_field :html_class, id: :navigation_html_class, class: "form-control", placeholder: "Test" %>
+		</div>
+	  </div>	
+	  <div class="form-group">
+	  	<div class="field">
+		    <%= form.label :parent %>	    
+		    <%= form.collection_select :parent, Navigation.all.map ,:id, :display_text, {}, {class: "form-control select2", :id => "navigation_parent_id" }%>
+		</div>
+	  </div>			  
+    </div>
+  	<!-- /.box-body -->
+    <div class="box-footer">
+    	<button type="submit" class="btn btn-primary">Submit</button>
+  	</div>
+	</form>
+  </div>
+  <!-- /.box -->
+  
 <% end %>
 
-<table id="example2" class="table table-bordered table-hover">     
-	<thead>
-    	<tr>
-			<th>#</th>
-			<th>Order id</th>
-			<th>Display text</th>
-			<th>URL</th>
-			<th>HTML class</th>
-			<th>Parent</th>
-			<th colspan="1"></th>
-        </tr>
-	</thead>
-	<tbody>
-	    <tr>
-	      <td><%= @navigation.id %></td>
-	      <td><%= best_in_place @navigation, :order_id, :as => :input, :type => :textarea %></td>
-		  <td><%= best_in_place @navigation, :display_text, :as => :input, :type => :textarea %></td>
-		  <td><%= best_in_place @navigation, :url, :as => :input, :type => :textarea  %></td>
-		  <td><%= best_in_place @navigation, :html_class, :as => :input, :type => :textarea  %></td>
-		  <td><%= best_in_place @navigation, :parent, :as => :select, :collection => Navigation.all.map { |i| [i.id, i.display_text] }.insert(0, ["0", "No parent"]) %></td>
-		  <td><%= best_in_place @navigation, :order_id, :as => :input, :type => :textarea  %></td>
-	      <td><%= #link_to 'Destroy', navigation_path(@navigation), method: :delete, data: { confirm: 'Are you sure?' }  #, :place_holder => "0" 
-	      %></td>
-	    </tr>
-    </tbody>
-    <tfoot>
-   	</tfoot>
-</table>

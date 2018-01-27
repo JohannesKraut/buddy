@@ -2,6 +2,9 @@ class Item < ApplicationRecord
   belongs_to :category
   belongs_to :interval
   belongs_to :account, optional: true
+  belongs_to :saving, optional: true
+  #belongs_to :id, :class_name => 'Item'
+  has_many :item_id, :class_name => 'Item', :foreign_key => 'id'
   
   def calculate_planned_value
     if id.present?

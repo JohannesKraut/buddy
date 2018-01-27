@@ -3,6 +3,7 @@
                     <strong><%= @header %></strong>
                   </p>
                     <!-- ><canvas id="pieChart" height="150"></canvas> -->
+                    <!-- column_chart -->
                     <%= column_chart @data, adapter: "highcharts", library: {
 								tooltip: { pointFormat: '{point.y:.2f}€' }, 
 							    plotOptions: {

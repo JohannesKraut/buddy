@@ -99,7 +99,7 @@ class MonthlyStatisticsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def monthly_statistic_params
-      params.require(:monthly_statistic).permit(:period, :planned_value, :actual_value, :item_id, :hibiscus_sync_id, :match_confidence, :match_type, :match_value, :account_id, :internal_transaction, :reserve_payment, :reserve_release)
+      params.require(:monthly_statistic).permit(:period, :planned_value, :actual_value, :item_id, :hibiscus_sync_id, :match_confidence, :match_type, :match_value, :account_id, :internal_transaction, :reserve_payment, :reserve_release, :text)
     end
 
 end

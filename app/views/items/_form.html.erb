@@ -45,6 +45,47 @@
 	  	<%= form.collection_select :interval_id, Interval.all ,:id, :name, {}, {class: "form-control select2", :id => "item_interval_id" }%>
 	  	</div>
 	  </div>
+	            <div class="box box-default">
+            <div class="box-header with-border">
+              <h3 class="box-title">Subitems</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="table-responsive">
+                <table class="table no-margin">
+                  <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Planned amount</th>
+                    <th>Sum</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  	<% @rollup = 0 
+                  	Item.where(:parent_id => @item.id).each do |child| 
+                  	@rollup += child.amount_calculated %>
+                  <tr>
+                    <td><%= link_to(child.name, child)  %></td>
+                    <td><%= child.amount_calculated %></td>
+                    <td><%= @rollup %></td>
+                  </tr>
+					<% end %>
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.table-responsive -->
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer no-padding">
+            </div>
+            <!-- /.footer -->
+          </div>
+          <!-- /.box -->
 	  <div class="form-group">
 		<div class="field">
 	    	<%= form.label :amount_calculated %>
@@ -94,11 +135,10 @@
 			<% end %>
 		</div>	
 		<div class="form-group">
-	    	<%= content_tag(:div, :class => "checkbox") do %>
-				<%= content_tag(:label) do %>
-		    		<%= form.check_box(:savings, id: :item_savings, class: "checkbox") + :savings %>
-		    	<% end %>
-			<% end %>
+		  <div class="field">
+		    <%= form.label :savings_id %>
+			<%= form.collection_select :savings_id, Saving.all ,:id, :name, {}, {class: "form-control select2"} %>
+			</div>
 		</div>	
 	    <div class="form-group">
 	    	<%= content_tag(:div, :class => "checkbox") do %>
@@ -113,7 +153,12 @@
 		    <%= form.number_field :order_id, id: :item_order_id , class: "form-control", placeholder: "Test" %>
 		  </div>
 	  	</div>
-		
+		<div class="form-group">
+		  <div class="field">
+		    <%= form.label :parent_id %>
+		    <%= form.collection_select :parent_id, Item.where('id <>?',@item.id) ,:id, :name, {:include_blank => true}, {class: "form-control select2", :id => "item_parent_id" }%>
+		  </div>
+	  	</div>
     </div>
   	<!-- /.box-body -->
     <div class="box-footer">

@@ -19,6 +19,9 @@ class ItemsController < ApplicationController
       @multiplier = Rational(@interval.numerator, @interval.denominator)
       @data = Hash.new
       @calculated = @multiplier * params[:amount].to_f
+      Item.where(:parent_id => @item.id).each do |child| 
+        @calculated += child.amount_calculated
+      end
       @data["amount_calculated"] = @calculated.round(2)
       render json: @data and return false
      end  
@@ -103,7 +106,7 @@ class ItemsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def item_params
-      params.require(:item).permit(:order_id, :name, :total_amount, :amount_calculated, :reserve, :maturity, :active, :category_id, :interval_id, :key_words, :account_id, :external_account, :budget, :savings)
+      params.require(:item).permit(:order_id, :name, :total_amount, :amount_calculated, :reserve, :maturity, :active, :category_id, :interval_id, :key_words, :account_id, :external_account, :budget, :savings_id, :parent_id)
     end
 end
 

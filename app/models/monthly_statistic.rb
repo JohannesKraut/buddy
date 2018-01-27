@@ -81,12 +81,15 @@ class MonthlyStatistic < ApplicationRecord
   end
   #@transactions.where('actual_value < 0 and budget = false and internal_transaction =false').sum(:actual_value) 
   def self.get_expenses(start_date, end_date)
-    return get_statistics_between(start_date, end_date).where('actual_value < 0 and internal_transaction = false').sum(:actual_value)
+    expenses = collect_monthly_expenses_clean(start_date, end_date).sum(:actual_value)
+    #transactions.where('actual_value < 0 and (internal_transaction = false or savings = true) and reserve = false ').or(transactions.where('actual_value < 0 and reserve = true and reserve_release = false and reserve_payment = false')).sum(:actual_value)
+    #reserves = transactions.where('actual_value < 0 and reserve = true and reserve_release = false').sum(:actual_value)
+    return expenses #+ reserves
   end
   
   #@transactions.where('actual_value > 0 And reserve = false and budget = false and savings = false and internal_transaction =false'
   def self.get_income(start_date, end_date)
-    return get_statistics_between(start_date, end_date).where('actual_value > 0 And reserve = false and budget = false and savings = false and internal_transaction =false').sum(:actual_value)
+    return get_statistics_between(start_date, end_date).where('actual_value > 0 And reserve = false and (budget = false or savings_id <> 4) and internal_transaction =false').sum(:actual_value)
   end
   
   def self.get_balance(start_date, end_date)
@@ -98,8 +101,14 @@ class MonthlyStatistic < ApplicationRecord
   end
   
   def self.get_expenses_grouped(start_date, end_date, group_by)
-    return get_statistics_between(start_date, end_date).where('actual_value < 0 and internal_transaction = false').group(:name).order('sum_actual_value ASC').sum(:actual_value)
-    #.where('actual_value < 0 and internal_transaction =false').group(group_by).order('sum_actual_value ASC').sum(:actual_value)
+    #transactions = get_statistics_between(start_date, end_date)
+    #expenses = transactions.where('actual_value < 0 and (internal_transaction = false or savings = true) and reserve = false').or(transactions.where('actual_value < 0 and reserve = true and (reserve_release = false and reserve_payment = false)'))
+    #reserves = transactions.where('actual_value < 0 and reserve = true')
+    #grouped_expenses = expenses
+    #MonthlyStatistic.where('actual_value < 0 and monthly_statistics.id In (Select * from monthly_statistics where internal_transaction = false and period BETWEEN ? AND ?) UNION (Select * from monthly_statistics where reserve = false and period BETWEEN ? AND ?)', start_date, end_date, start_date, end_date).joins(:item) #expenses.merge(reserves)
+    return collect_monthly_expenses_clean(start_date, end_date).group(group_by).order('sum_actual_value ASC').sum(:actual_value)
+    #return get_statistics_between(start_date, end_date).where('actual_value < 0 and internal_transaction = false').group(:name).order('sum_actual_value ASC').sum(:actual_value)
+    ##.where('actual_value < 0 and internal_transaction =false').group(group_by).order('sum_actual_value ASC').sum(:actual_value)
   end
 
   require 'csv'
@@ -109,4 +118,11 @@ class MonthlyStatistic < ApplicationRecord
       MontlyStatistic.create! row.to_hash
     end
   end
+  
+  #private
+  
+    def self.collect_monthly_expenses_clean(start_date, end_date)
+      transactions = get_statistics_between(start_date, end_date)
+      return transactions.where('actual_value < 0 and (internal_transaction = false or savings_id <> 4) and reserve = false').or(transactions.where('actual_value < 0 and reserve = true and (reserve_release = false and reserve_payment = false)'))
+    end
 end

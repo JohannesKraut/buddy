@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :savings
   get 'dashboard/dashboard'
   
   resources :navigations
@@ -8,6 +9,7 @@ Rails.application.routes.draw do
   resources :items
   resources :intervals
   resources :categories
+  resources :savings
   
   root 'dashboard#dashboard'
   
