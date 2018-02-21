@@ -10,13 +10,10 @@
  <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-      	Monthly planning
-        <small>Income vs. expenses</small>
-      </h1>
-      <%= render 'navigations/navigation_bar' %>
-    </section>
+	<% @title = 'Monthly planning' %>
+	<% @subtitle = 'Income vs. expenses' %>
+	<%= render 'layouts/content_header', locals: {title: @title, subtitle: @subtitle} %>
+
 	<!-- Main content -->
 	<section class="content">	
       <div class="row">

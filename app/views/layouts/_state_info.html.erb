@@ -9,12 +9,22 @@
       </div>
     </p>
   <% end %>
+  <% if key == "alert" %>
+    <!-- <p class="flash-error"><%= flash[:alert] %></p> -->
+    <p class="flash-error" id="notice">
+      <div class="alert alert-danger alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      	<h4><i class="icon fa fa-warning"></i> Alert!</h4>
+        <%= value %>
+      </div>
+    </p>
+  <% end %>
   <% if key == "info" %>
     <!-- <p class="flash-error"><%= flash[:alert] %></p> -->
     <p class="flash-notice" id="notice">
       <div class="alert alert-info alert-dismissible">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-      	<h4><i class="icon fa fa-info"></i> Alert!</h4>
+      	<h4><i class="icon fa fa-info"></i> Info!</h4>
         <%= value %>
       </div>
     </p>
@@ -23,14 +33,14 @@
 	<p class="flash-success" id="notice">
 	  <div class="alert alert-success alert-dismissible">
 	    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-	    <h4><i class="icon fa fa-check"></i> Alert!</h4>
+	    <h4><i class="icon fa fa-check"></i> Success!</h4>
 	    <%= value %>
 	  </div>
 	</p>
   <% end %>
   <% if key == "error" %>
   	<p class="flash-error" id="notice">
-    	<div class="alert alert-warning alert-dismissible">
+    	<div class="alert alert-danger alert-dismissible">
     		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
     		<h4><i class="icon fa fa-warning"></i> Alert!</h4>
     		<%= value %>

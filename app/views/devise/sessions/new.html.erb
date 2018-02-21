@@ -1,0 +1,45 @@
+<div class="content-wrapper">
+	<!-- Content Header (Page header) -->	
+	<% @title = 'Log in' %>
+	<% @subtitle = 'Welcome' %>
+	<%= render 'layouts/content_header', locals: {title: @title, subtitle: @subtitle} %>
+	<!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <div class="box-body">
+				<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+				  <div class="field">
+				    <%= f.label :email %><br />
+				    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+				  </div>
+				
+				  <div class="field">
+				    <%= f.label :password %><br />
+				    <%= f.password_field :password, autocomplete: "off" %>
+				  </div>
+				
+				  <% if devise_mapping.rememberable? -%>
+				    <div class="field">
+				      <%= f.check_box :remember_me %>
+				      <%= f.label :remember_me %>
+				    </div>
+				  <% end -%>
+				
+				  <div class="actions">
+				    <%= f.submit "Log in" %>
+				  </div>
+				<% end %>
+				
+				<%= render "devise/shared/links" %>
+		    </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+	</section>
+    <!-- /.content -->

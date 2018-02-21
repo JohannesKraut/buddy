@@ -68,6 +68,7 @@ gem 'will_paginate'
 gem 'chart-js-rails'
 gem 'chartkick'
 gem 'groupdate'
+gem 'devise'
 ###
 
 

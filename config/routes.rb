@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :users
   resources :savings
   get 'dashboard/dashboard'
   
@@ -11,7 +12,7 @@ Rails.application.routes.draw do
   resources :categories
   resources :savings
   
-  root 'dashboard#dashboard'
+  root to: 'dashboard#dashboard'
   
   get '/calculate_amount', to: 'items#calculate_amount'
   get '/get_pie_data', to: 'monthly_statistics#get_pie_data'
