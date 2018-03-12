@@ -23,3 +23,5 @@ config/database.yml
 config/database.yml
 >>>>>>> 56378616bae78c8df64ff30f4306a7472425c0cc
 public/images
+.env
+Procfile

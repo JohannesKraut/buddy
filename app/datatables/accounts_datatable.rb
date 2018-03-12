@@ -1,8 +1,9 @@
 class AccountsDatatable
   delegate :params, :h, :link_to, to: :@view
     
-  def initialize(view)
+  def initialize(view, current_user)
     @view = view
+    @current_user = current_user
   end
 
   def as_json(options = {})
@@ -18,7 +19,7 @@ private
 
   def data
     data = Array.new
-    accounts.all.order(:id).each_with_index do |account, index|
+    accounts.where(:user_id => @current_user.id).order(:id).each_with_index do |account, index|
       row = [
         account.id,
         account.account_number,

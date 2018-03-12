@@ -1,52 +1,25 @@
-              <div class="row">
-                <div class="col-md-12">
                   <div class="chart-responsive">
-                    <!-- ><canvas id="pieChart" height="150"></canvas> -->
-                    <% first_of_month = Date.current.beginning_of_month
-					last_of_next_month = Date.current.end_of_month %>
-                    <!--
-                    MonthlyStatistic.where('period BETWEEN ? AND ?', first_of_month, last_of_next_month).find_each do |transaction| 
-                     @monthlyStatisticsWithNames = Hash.new
-                      @monthlyStatisticsWithNames[""] = 
-                      Invoice.joins(:enrollments).uniq
-                   end -->
-                    <%= # = MonthlyStatistic.where('period BETWEEN ? AND ?', first_of_month, last_of_next_month).joins(:item)
-                    @chart = MonthlyStatistic.all.joins(:item)
-                                        #pie_chart @chart.group(:name).count
-
-                                        @expenses_pie = @chart.where('actual_value < 0').group(:name).sum(:actual_value)
-                                        #@chart.group(:id).having("SUM(actual_value) < 0")
-                                        
-                                        data = Array.new                                
-                                        @expenses_pie.find_all do |item|
+                  <p class="text-center">
+                    <strong><%= @header %></strong>
+                  </p>
+					<%                  data = Array.new                                
+                                        @data.find_all do |item|
                                         	actual_value = item[1].to_f*-1
                                        		row = [item[0], actual_value]
 									    	data.push(row)
                                         end
+                    %>
 
-                                        pie_chart data, adapter: "highcharts", library: { 
-                                        	#chart: { height: '70%'},
-                                        	tooltip: { pointFormat: '<b>-{point.y:.2f}€</b>' },
-                                        	plotOptions: { pie: { 	allowPointSelect: true,
-            														cursor: 'pointer',
-            														dataLabels: {
-                																	enabled: true,
-                																	format: '{point.name}: {point.percentage:.1f} %'
-            														}}}}
+                   <%=  pie_chart data, adapter: "highcharts", library: { 
+                    	#chart: { height: '70%'},
+                    	tooltip: { pointFormat: '<b>-{point.y:.2f}€</b>' },
+                    	plotOptions: { pie: { 	allowPointSelect: true,
+												cursor: 'pointer',
+												dataLabels: {
+																enabled: true,
+																format: '{point.name}: {point.percentage:.1f} %'
+												}}}}
 
-                                        %>
-                                       
-                                       <%= 
-                     %>
+                    %>
                   </div>
                   <!-- ./chart-responsive -->
-                </div>
-                <!-- /.col -->
-                <!-- /.col -->
-              </div>
-              <!-- /.row -->
- 
-      
-<script type="text/javascript">
-	
-</script>

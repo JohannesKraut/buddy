@@ -53,9 +53,9 @@
 	  <div class="form-group">
 		 <div class="field">
 	    	<%= form.label :item_id %>
-	  	<%= form.collection_select :item_id, Item.all ,:id, :name, {}, {class: "form-control select2", :id => "item_id" }%>
+	  	<%= form.collection_select :item_id, Item.all ,:id, :name,  {:include_blank => true}, {class: "form-control select2", :id => "item_id" }%>
 		 </div>
-	  </div>		
+	  </div>	
     </div>
   	<!-- /.box-body -->
     <div class="box-footer">

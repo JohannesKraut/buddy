@@ -7,8 +7,9 @@ class MonthlyStatisticsDatatable
   
   #:period, :planned_value, :actual_value, :item_id
   
-  def initialize(view)
+  def initialize(view, current_user)
     @view = view
+    @current_user = current_user
   end
 
   def as_json(options = {})
@@ -26,33 +27,34 @@ private
     data = Array.new
     if params[:sSearch_1].present?
       date_range = params[:sSearch_1].split(";")
-      statistics = monthly_statistics.where('period BETWEEN ? AND ?', date_range[0], date_range[1])
+      statistics = monthly_statistics.where('period BETWEEN ? AND ?', date_range[0], date_range[1]) #joins(:account).where(:user_id => @current_user.id)
     else
-      statistics = monthly_statistics.all
+      statistics = monthly_statistics.all #joins(:account).
     end
    
     #"0" => "id", "1" => "period", "2" => "item_id", "3" => "planned_value", "4" => "actual_value"
-    statistics.order(:period).each_with_index do |monthly_statistic, index|
+    statistics.each_with_index do |monthly_statistic, index|
     #monthly_statistics.all.order(:period).each_with_index do |monthly_statistic, index|
       #@transaction = find_transaction(monthly_statistic.hibiscus_sync_id)
       #@transaction["text"] 
         #Account.find(monthly_statistic.account_id).description,
         #find_item(monthly_statistic.item_id),
-              
-      row = [
-        link_to(monthly_statistic.id, monthly_statistic),
-        monthly_statistic.period,
-        monthly_statistic.account_id,
-        monthly_statistic.item_id,
-        monthly_statistic.planned_value,
-        monthly_statistic.actual_value,
-        monthly_statistic.hibiscus_sync_id,
-        monthly_statistic.match_confidence,
-        monthly_statistic.match_type,
-        monthly_statistic.match_value,
-        monthly_statistic.text
-      ]
-      data.push(row)
+      if monthly_statistic.accounts[0]['user_id'] = @current_user.id
+        row = [
+          link_to(monthly_statistic.id, monthly_statistic),
+          monthly_statistic.period,
+          monthly_statistic.account_id,
+          monthly_statistic.item_id,
+          monthly_statistic.planned_value,
+          monthly_statistic.actual_value,
+          monthly_statistic.hibiscus_sync_id,
+          monthly_statistic.match_confidence,
+          monthly_statistic.match_type,
+          monthly_statistic.match_value,
+          monthly_statistic.text
+        ]
+        data.push(row)
+      end
     end
     return data
   end
@@ -100,7 +102,10 @@ private
   end
 
   def fetch_monthly_statistics
-    monthly_statistics = MonthlyStatistic.order("#{sort_column} #{sort_direction}")
+    
+    #monthly_statistics = Account.where(:user_id => @current_user.id).joins(:monthly_statistics).order("#{sort_column} #{sort_direction}")
+    monthly_statistics = MonthlyStatistic.order("#{sort_column} #{sort_direction}") #.joins(:account).where('user_id = ?', @current_user.id)
+    #monthly_statistics = Account.where('user_id = ?', @current_user.id).order("#{sort_column} #{sort_direction}")
     monthly_statistics = monthly_statistics.page(page).per_page(per_page)
     if params[:sSearch].present?
       #search globally (in every column) -> 'OR'

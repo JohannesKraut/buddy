@@ -1,5 +1,11 @@
 class Account < ApplicationRecord
   has_many :items
+  belongs_to :user
+  has_many :transactions, :class_name => 'Transaction'
+  has_many :monthly_statistics, :through => :transactions
+  
+  validates :user, presence: true
+  resourcify
 
   require 'csv'
   #uses import method of referenced class CSV

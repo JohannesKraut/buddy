@@ -5,8 +5,9 @@ class ItemsDatatable
   #scope :featured, -> { where(:featured => true) }
   #scope :by_degree, -> degree { where(:degree => degree) }
   
-  def initialize(view)
+  def initialize(view, current_user)
     @view = view
+    @current_user = current_user
   end
 
   def as_json(options = {})
@@ -22,7 +23,7 @@ private
 
   def data
     data = Array.new
-    items.all.order(:order_id).each_with_index do |item, index|
+    items.where(:user_id => @current_user.id).order(:order_id).each_with_index do |item, index|
       if index == 0 then
         @rollup = item.amount_calculated
       else

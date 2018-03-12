@@ -2,6 +2,8 @@ class ItemsController < ApplicationController
   before_action :set_item, only: [:show, :edit, :update, :destroy]
   respond_to :html, :json
   add_flash_types :success, :warning, :danger, :info
+  before_action :authenticate_user!
+  load_and_authorize_resource
 
   def get_item
     if params[:id].present?
@@ -33,7 +35,7 @@ class ItemsController < ApplicationController
   def index
     respond_to do |format|
     format.html
-    format.json { render json: ItemsDatatable.new(view_context) }
+    format.json { render json: ItemsDatatable.new(view_context, current_user) }
     end
   end
   
@@ -45,7 +47,7 @@ class ItemsController < ApplicationController
 
   # GET /items/new
   def new
-    @item = Item.new
+    @item = Item.new(:user_id => current_user.id)
   end
 
   # GET /items/1/edit
@@ -57,6 +59,7 @@ class ItemsController < ApplicationController
   # POST /items.json
   def create
     @item = Item.new(item_params)
+    @item.user_id = current_user.id
 
     respond_to do |format|
       if @item.save
@@ -106,7 +109,7 @@ class ItemsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def item_params
-      params.require(:item).permit(:order_id, :name, :total_amount, :amount_calculated, :reserve, :maturity, :active, :category_id, :interval_id, :key_words, :account_id, :external_account, :budget, :savings_id, :parent_id)
+      params.require(:item).permit(:order_id, :name, :total_amount, :amount_calculated, :reserve, :maturity, :active, :category_id, :interval_id, :key_words, :account_id, :external_account, :budget, :savings_id, :parent_id, :user_id)
     end
 end
 

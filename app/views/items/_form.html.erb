@@ -45,6 +45,7 @@
 	  	<%= form.collection_select :interval_id, Interval.all ,:id, :name, {}, {class: "form-control select2", :id => "item_interval_id" }%>
 	  	</div>
 	  </div>
+	  <% if @item.id.present? %>
 	            <div class="box box-default">
             <div class="box-header with-border">
               <h3 class="box-title">Subitems</h3>
@@ -54,6 +55,7 @@
                 <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
               </div>
             </div>
+            
             <!-- /.box-header -->
             <div class="box-body">
               <div class="table-responsive">
@@ -66,7 +68,9 @@
                   </tr>
                   </thead>
                   <tbody>
-                  	<% @rollup = 0 
+                  	<% @rollup = 0
+                  	
+                  		
                   	Item.where(:parent_id => @item.id).each do |child| 
                   	@rollup += child.amount_calculated %>
                   <tr>
@@ -74,7 +78,7 @@
                     <td><%= child.amount_calculated %></td>
                     <td><%= @rollup %></td>
                   </tr>
-					<% end %>
+					<% 	end %>
                   </tbody>
                 </table>
               </div>
@@ -86,6 +90,7 @@
             <!-- /.footer -->
           </div>
           <!-- /.box -->
+          <% end %>
 	  <div class="form-group">
 		<div class="field">
 	    	<%= form.label :amount_calculated %>

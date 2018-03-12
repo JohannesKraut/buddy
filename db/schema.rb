@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180204122305) do
+ActiveRecord::Schema.define(version: 20180311201023) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "account_number"
@@ -21,7 +21,9 @@ ActiveRecord::Schema.define(version: 20180204122305) do
     t.datetime "updated_at", null: false
     t.integer "hibiscus_account_id"
     t.bigint "item_id"
+    t.bigint "user_id", default: 2
     t.index ["item_id"], name: "index_accounts_on_item_id"
+    t.index ["user_id"], name: "index_accounts_on_user_id"
   end
 
   create_table "categories", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -78,11 +80,13 @@ ActiveRecord::Schema.define(version: 20180204122305) do
     t.boolean "budget"
     t.bigint "savings_id"
     t.bigint "parent_id"
+    t.bigint "user_id", default: 2
     t.index ["account_id"], name: "index_items_on_account_id"
     t.index ["category_id"], name: "index_items_on_category_id"
     t.index ["interval_id"], name: "index_items_on_interval_id"
     t.index ["parent_id"], name: "index_items_on_parent_id"
     t.index ["savings_id"], name: "index_items_on_savings_id"
+    t.index ["user_id"], name: "index_items_on_user_id"
   end
 
   create_table "monthly_statistics", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -115,12 +119,32 @@ ActiveRecord::Schema.define(version: 20180204122305) do
     t.integer "order_id"
   end
 
+  create_table "roles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "name"
+    t.string "resource_type"
+    t.bigint "resource_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
+    t.index ["name"], name: "index_roles_on_name"
+    t.index ["resource_type", "resource_id"], name: "index_roles_on_resource_type_and_resource_id"
+  end
+
   create_table "savings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "name"
     t.string "description"
     t.integer "duration"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "transactions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "account_id"
+    t.bigint "monthly_statistic_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_transactions_on_account_id"
+    t.index ["monthly_statistic_id"], name: "index_transactions_on_monthly_statistic_id"
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -140,12 +164,22 @@ ActiveRecord::Schema.define(version: 20180204122305) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "users_roles", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "user_id"
+    t.bigint "role_id"
+    t.index ["role_id"], name: "index_users_roles_on_role_id"
+    t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
+    t.index ["user_id"], name: "index_users_roles_on_user_id"
+  end
+
   add_foreign_key "accounts", "items"
+  add_foreign_key "accounts", "users"
   add_foreign_key "finance_states", "accounts"
   add_foreign_key "items", "accounts"
   add_foreign_key "items", "categories"
   add_foreign_key "items", "intervals"
   add_foreign_key "items", "savings", column: "savings_id"
+  add_foreign_key "items", "users"
   add_foreign_key "monthly_statistics", "accounts"
   add_foreign_key "monthly_statistics", "items"
 end

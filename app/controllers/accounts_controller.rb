@@ -1,13 +1,15 @@
 class AccountsController < ApplicationController
   before_action :set_account, only: [:show, :edit, :update, :destroy]
   respond_to :html, :json
+  before_action :authenticate_user!
+  load_and_authorize_resource
 
   # GET /accounts
   # GET /accounts.json
   def index   
     respond_to do |format|
     format.html
-    format.json { render json: AccountsDatatable.new(view_context) }
+    format.json { render json: AccountsDatatable.new(view_context, current_user) }
     end
   end
 
@@ -19,7 +21,7 @@ class AccountsController < ApplicationController
 
   # GET /accounts/new
   def new
-    @account = Account.new
+    @account = Account.new(:user_id => current_user.id)
   end
 
   # GET /accounts/1/edit
@@ -30,8 +32,9 @@ class AccountsController < ApplicationController
   # POST /accounts
   # POST /accounts.json
   def create
+    
     @account = Account.new(account_params)
-
+    @account.user_id = current_user.id
     respond_to do |format|
       if @account.save
         format.html { redirect_to @account, notice: 'Account was successfully created.' }
@@ -80,6 +83,6 @@ class AccountsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def account_params
-      params.require(:account).permit(:account_number, :description, :iban, :bic, :hibiscus_account_id, :item_id)
+      params.require(:account).permit(:account_number, :description, :iban, :bic, :hibiscus_account_id, :item_id, :user_id)
     end
 end

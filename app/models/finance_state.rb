@@ -1,11 +1,11 @@
 class FinanceState < ApplicationRecord
   belongs_to :account
   
-  def self.synchronize
+  def self.synchronize(current_user)
     
     @counter = 0
     #HibiscusTransaction.all.order(valuta: :desc).each_with_index do |transaction, index|
-    Account.all.order(hibiscus_account_id: :asc).each do |account|
+    Account.where(:user_id => current_user.id).order(hibiscus_account_id: :asc).each do |account|
       @current_account = account.hibiscus_account_id
       logger.debug "CURRENT ACCOUNT: " + @current_account.to_s
       #"New article: #{@article.attributes.inspect}"
@@ -62,7 +62,7 @@ class FinanceState < ApplicationRecord
           end
           
           #Item.all.each do |item|
-          Item.where(:active => true).find_each do |item|
+          Item.where(:active => true, :user_id => current_user.id).find_each do |item|
             #puts "CURRENT ITEM: " + item.id.to_s          
             @match = match_item_to_transaction(account, item, transaction)
         
@@ -114,11 +114,13 @@ class FinanceState < ApplicationRecord
             end
           end
           logger.debug  "CREATE MONTHLY STATISTIC"
-          MonthlyStatistic.create(:period => @period, :planned_value => @planned_value, :actual_value => @actual_value, :item_id => @item_id, :hibiscus_sync_id => @hibiscus_sync_id, :match_confidence => @match_confidence, :match_type => @match_type, :match_value => @match_value, :account_id => account.id, :internal_transaction => @internal_transaction, :reserve_release => @reserve_release, :reserve_payment => @reserve_payment, :text => @text)
+          statistic = MonthlyStatistic.create(:period => @period, :planned_value => @planned_value, :actual_value => @actual_value, :item_id => @item_id, :hibiscus_sync_id => @hibiscus_sync_id, :match_confidence => @match_confidence, :match_type => @match_type, :match_value => @match_value, :account_id => account.id, :internal_transaction => @internal_transaction, :reserve_release => @reserve_release, :reserve_payment => @reserve_payment, :text => @text)
           @last_synchronized = transaction.valuta
           @balance = transaction.saldo
           @hibiscus_id = transaction.id
           @payment = true
+          
+          Transaction.create(:account_id => account.id, :monthly_statistic_id => statistic.id)
           
         end   #end hibsicus_transaction
         

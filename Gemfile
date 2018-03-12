@@ -69,8 +69,9 @@ gem 'chart-js-rails'
 gem 'chartkick'
 gem 'groupdate'
 gem 'devise'
+gem 'cancancan'
+gem 'rolify'
 ###
-
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -78,6 +79,7 @@ group :development, :test do
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '~> 2.13'
   gem 'selenium-webdriver'
+  gem 'foreman'
 end
 
 group :development do

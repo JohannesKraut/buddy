@@ -69,7 +69,7 @@ class FinanceStatesController < ApplicationController
   end
   
   def synchronize
-    FinanceState.synchronize
+    FinanceState.synchronize(current_user)
     redirect_to finance_states_path, success: "Statistics created"
   end
   
